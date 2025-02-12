@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My LeetCode Challenge Journaling</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        h1, h3 {
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+        .blog-post {
+            border-bottom: 1px solid #ddd;
+            padding: 20px 0;
+        }
+
+        .blog-post h2 {
+            margin-bottom: 5px;
+        }
+        .blog-post {
+            text-align: left;  
+}
+        .blog-post p {
+            color: #666;
+        }
+        .blog-post .date {
+            font-size: 12px;
+            color: #888;
+        }
+        .blog-post a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        .profile {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .profile a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        pre {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Welcome to my page！🚀</h1>
+    <p>I'm starting a daily LeetCode challenge here and documenting my solutions, thoughts, and takeaways.</p>
+
+    <div class="container">
+        <h2>Day 1: Mastering Two-Pointer and Binary Search</h2>
+        <p class="date">2025-02-11</p>
+        
+        <p>Today, I started my LeetCode journey with two fundamental problems: <b>Binary Search (704)</b> and <b>Remove Element (27)</b>. 
+        These two problems reinforced two key techniques—<b>Binary Search for efficient searching</b> and <b>Two Pointers for in-place modifications</b>.</p>
+
+        <h3>📌 Problem 1: 704. Binary Search</h3>
+        <p>Binary Search is one of the most fundamental techniques when dealing with sorted arrays. Instead of linearly scanning each element, we <b>divide the array in half</b> at each step, reducing the search time from O(n) to <b>O(log n)</b>.</p>
+
+        <pre><code class="language-python">
+from typing import List
+
+class Solution:
+    def search(self, nums: List[int], target: int) -> int:
+        if not nums:
+            return -1
+        if len(nums) == 1 and target in nums:
+            return 0 
+        l, r = 0, len(nums) - 1
+        while l <= r:
+            m = (l + r) // 2
+            if nums[m] == target:
+                return m
+            if nums[m] > target:
+                r = m - 1
+            else:
+                l = m + 1
+        return -1
+        </code></pre>
+
+        <p>✅ <b>What's up:</b></p>
+        <ul>
+            <li>Use <b>Binary Search</b> to optimize search time complexity from O(n) to <b>O(log n)</b>.</li>
+            <li>If <code>nums[m] > target</code>, search in <b>left half</b> (<code>[l, m-1]</code>).</li>
+            <li>If <code>nums[m] < target</code>, search in <b>right half</b> (<code>[m+1, r]</code>).</li>
+            <li>The point is always to <b>know your boundaries(l,r) and when to stop</b> (<code>l > r</code>). 😊</li>
+        </ul>
+
+        <a href="https://leetcode.cn/problems/binary-search/description/" target="_blank">Try the problem yourself...</a>
+
+        <h3>📌 Problem 2: 27. Remove Element</h3>
+        <p>At first, I used a simple brute-force traversal method to solve this problem. But after a second thought, I realized the beauty of the <b>two-pointer technique</b>!</p>
+
+        <pre><code class="language-python">
+from typing import List
+
+class Solution:
+    def removeElement(self, nums: List[int], val: int) -> int:
+        l, r, k = 0, 0, 0
+        while r < len(nums):
+            if nums[r] != val:
+                nums[l] = nums[r]
+                k += 1
+                l += 1
+            r += 1
+        return k
+        </code></pre>
+
+        <p>✅ <b>Key Learnings:</b></p>
+        <ul>
+            <li>Instead of creating a new list, we <b>modify the array in place</b> using <b>two pointers (<code>l</code> and <code>r</code>)</b>.</li>
+            <li>Pointer <code>r</code> scans the entire list, while <code>l</code> tracks valid elements.</li>
+            <li>Less complexity? Not really. <b>More elegance? Absolutely.</b> 💅</li>
+            <li>Fun fact: <b>I got a 100% performance score on this!</b> 🎯</li>
+        </ul>
+
+        <a href="https://leetcode.cn/problems/remove-element/" target="_blank">Now try it...</a>
+
+        <h3>📌 Problem 3: 977. Squares of a Sorted Array</h3>
+        <p>Ok, showtime for our beloved friend <b>two-pointer technique</b> when it comes to sorting! 😂</p>
+        <pre><code class="language-python">
+class Solution:
+    def sortedSquares(self, nums: List[int]) -> List[int]:
+        l, r = 0, len(nums) - 1
+        temp = len(nums) - 1
+        x, y = nums[l]**2, nums[r]**2
+        ans = nums[:]
+        while l <= r:
+            if x <= y:
+                ans[temp] = y
+                r -= 1
+                y = nums[r]**2
+            else:
+                ans[temp] = x
+                l += 1
+                x = nums[l]**2
+            temp -= 1
+        return ans
+        </code></pre>
+
+        <p>✅ <b>Notes:</b></p>
+        <ul>
+            <li>Big applauds: I didn't snap it with <code>sort()</code> and call it a day.</li>
+            <li>How smart is that! Two pointers can go from two ends and end up hugging each other!! 💕</li>
+            <li>Girl now you just lowered a O(nlog(n)) to O(n). 💅</li>
+        </ul>
+
+        <a href="https://leetcode.cn/problems/squares-of-a-sorted-array/" target="_blank">Now try it...</a>
+    </div>
+
+    <div class="profile">
+        <p>📢 Follow my Bilibili account to get a little bit of my daily life in NYC：</p>
+        <a href="https://space.bilibili.com/865132" target="_blank">👉 我的 Bilibili 主页</a>
+    </div>
+
+</body>
+</html>
