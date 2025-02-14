@@ -265,6 +265,119 @@ class Solution:
         <li>After each row or column, gently move your boundaries one unit inner.</li>
     </ul>
     <a href="https://leetcode.cn/problems/spiral-matrix-ii/description/" target="_blank">Now try it...</a>
+
+
+
+day3
+    <h3>📌 Problem 1: 203.Remove Linked List Elements</h3>
+    <p>To further get to know list structures, it's always a must to learn about linked list.</p>
+
+    <pre><code class="language-python">
+def removeElements(self, head: Optional[ListNode], val: int) -> Optional[ListNode]:
+if not head:return head
+pre = ListNode()
+pre.next = head
+temp = pre
+while head:
+    if head.val == val:
+        temp.next = head.next
+    else:
+        temp = head
+    head = head.next
+return pre.next
+    </code></pre>
+    
+    <p>✅ <b>Thoughts:</b></p>
+    <ul>
+        <li>Even I have nailed it hundreds of times, I still got confused what to put down for the first row.</li>
+        <li>It's intuitive to initiate a dummy node pre, but when to move the temp and how?</li>
+        <li>We always want to move head one unit forward, but when it's equal to val, we would want to move temp's next across to head.next. At the end of the day, temp is what we include in the result.</li>
+        <li>Stop, and take a moment to close your eyes to imagine what happened about temp.</li>
+    </ul>
+    <a href="https://leetcode.cn/problems/remove-linked-list-elements/" target="_blank">Now try it...</a>
+
+    <h3>📌 Problem 2: 707. Design Linked List</h3>
+    <p>Design a linked list from scrach!</p>
+
+    <pre><code class="language-python">
+class ListNode():
+        def __init__(self, val ):
+            self.val = val
+            self.next = None
+class MyLinkedList:
+    
+        def __init__(self):
+            self.size = 0
+            self.head = ListNode(0)
+    
+        def get(self, index: int) -> int:
+            if index<0 or index>=self.size:return -1
+            temp = self.head
+            for _ in range(index+1):
+                temp = temp.next
+            return temp.val
+            
+    
+        def addAtHead(self, val: int) -> None:
+            self.addAtIndex(0, val)
+    
+        def addAtTail(self, val: int) -> None:
+            self.addAtIndex(self.size, val)
+    
+        def addAtIndex(self, index: int, val: int) -> None:
+            if index>self.size : return
+            self.size+=1
+            pre = self.head
+            for _ in range(index):
+                pre = pre.next
+            new = ListNode(val)
+            new.next = pre.next
+            pre.next = new
+    
+        def deleteAtIndex(self, index: int) -> None:
+            if index<0 or index>=self.size:
+                return
+            self.size -= 1
+            pre = self.head
+            for _ in range(index):
+                pre = pre.next
+            pre.next = pre.next.next
+    </code></pre>
+    
+    <p>✅ <b>Thoughts:</b></p>
+    <ul>
+        <li>Looking scary, but there're truly only three functions: addatindex, get, delete.</li>
+        <li>It's intuitive to initiate a dummy node pre, but when to move the temp and how?</li>
+        <li>Without using a list [], it can be hard to implement. But remember, we have for loops.(always)</li>
+        <li>With many for loops and one size variable, you're able to handle it just as lists!</li>
+    </ul>
+
+
+    <h3>📌 Problem 3: 206. Reverse Linked List</h3>
+    <p>Think the opposite way!</p>
+
+    <pre><code class="language-python">
+class Solution:
+def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+    pre = None
+    while head:
+        temp = head.next
+        head.next = pre
+        pre = head
+        head = temp
+    
+    return pre
+    </code></pre>
+    
+    <p>✅ <b>My bad:</b></p>
+    <ul>
+        <li>As it's an easy problem, there can be tricks.</li>
+        <li>How do you unconnect the links and rebuild it the other way?</li>
+        <li>I made a mistake by using pre as a ListNode(), a dummy variable. But no! Dummy doesn't mean it's a listnode with value 0. It means None! Nothing! Void!</li>
+    </ul>
+    <a href="https://leetcode.cn/problems/reverse-linked-list/description/" target="_blank">Don't follow my path...</a>
+
+
 </div>
 
 
