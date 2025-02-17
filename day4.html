@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 4: Linked List Advanced</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <h3>📌 Problem 1: 24. Swap Nodes in Pairs</h3>
+    <p>A seemingly brain-twister, but can be easily cracked if you truncate the problem into pair units.</p>
+
+    <pre><code class="language-python">
+class Solution:
+    def swapPairs(self, head: Optional[ListNode]) -> Optional[ListNode]:    
+        if not head or not head.next:return head
+        pre = ListNode()
+        pre.next = head.next
+        begin = pre
+        while head and head.next:
+            second = head.next
+            pre.next = second
+            head.next = second.next
+            second.next = head
+            pre = head
+            head = head.next
+            
+        return begin.next
+            
+    </code></pre>
+    
+    <p>✅ <b>Thoughts:</b></p>
+    <ul>
+        <li>Initializing and iterating pre variable is crucial for connecting pairs.</li>
+        <li>And you already know the drill in each small pair, just like reversing linked two-element lists.</li>
+    </ul>
+    <a href="https://leetcode.cn/problems/swap-nodes-in-pairs/" target="_blank">Now try it...</a>
+
+    <h3>📌 Problem 2: 19. Remove Nth Node From End of List</h3>
+    <p>Don't be silly! You don't need to count from the tail: 1,2,..n. Two-Pointer is all you need.</p>
+
+    <pre><code class="language-python">
+class Solution:
+    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+        pre = ListNode()
+        pre.next = head
+        slow = pre
+        fast = pre
+        for _ in range(n+1):
+                fast = fast.next
+
+        while fast:
+            slow = slow.next
+            fast = fast.next
+        slow.next = slow.next.next
+        return pre.next
+    </code></pre>
+    
+    <p>✅ <b>Tricks:</b></p>
+    <ul>
+        <li>I admitted I spent more time debugging than coding.</li>
+        <li>Why? Because of the corner cases! How tricky is it to think of initializing your pointer at the dummy node?</li>
+        <li>You'll have to do that in case that you're deleting the only/last element where slow.next.next may not exist! </li>
+        <li>And the fast pointer shall go n+1 steps further since you wanna skip the Nth node and stop the slow pointer at (n-1)th!</li>
+    </ul>
+
+
+    <h3>📌 Problem 3: 142. Linked List Cycle II</h3>
+    <p>Math is the base of all science, including computer science.</p>
+
+    <pre><code class="language-python">
+class Solution:
+    def detectCycle(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        if not head:return 
+        slow, fast = head, head
+        pos = 0
+        
+        while fast and fast.next:
+            pos += 1
+            slow = slow.next
+            fast = fast.next.next
+            if fast == slow: 
+                while head != fast:
+                        head = head.next
+                        fast = fast.next
+                return fast
+        return
+    </code></pre>
+    
+    <p>✅ <b>Diophantine equation:</b></p>
+    <ul>
+        <a href="https://programmercarl.com/0142.%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8II.html#%E6%80%9D%E8%B7%AF" target="_blank">Do the math</a>
+        <li>Yes it's intuitive to use fast and slow pointers. But, how are the path connected to the circle?</li>
+        <li>I strongly recommand using hashmap if you don't have paper and pen to put down equations and visualizations...</li>
+    </ul>
+    <a href="https://leetcode.cn/problems/linked-list-cycle-ii/" target="_blank">Crack it if you dare...</a>
+
+    </div>
+    <a href="index.html">⬅️ Back to main page</a>
+
+</body>
+</html>
