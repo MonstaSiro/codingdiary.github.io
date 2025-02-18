@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 5: Hashmap</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <h2>Day 4: Hashmap</h2>
+        <p class="date">2025-02-17</p>
+        <h3>📌 Problem 1: 242. Valid Anagram</h3>
+    <p>Use hashmap when you want to know if an element is in the list. If you want to further know how many of them, use defaultdict() or Counter()</p>
+
+    <pre><code class="language-python">
+class Solution(object):
+    def isAnagram(self, s: str, t: str) -> bool:
+            a_count = Counter(s)
+            b_count = Counter(t)
+            return a_count == b_count
+    </code></pre>
+    
+    <p>✅ <b>Thoughts:</b></p>
+    <ul>
+        <li>Counter() traverses the list and give you all the unique elements and their frequency.</li>
+    </ul>
+    <a href="https://leetcode.cn/problems/valid-anagram/description/" target="_blank">Now try it...</a>
+
+    <h3>📌 Problem 2: 349. Intersection of Two Arrayst</h3>
+    <p>I'm providing two solutions for both situations: allow duplicates and not allow.</p>
+
+    <pre><code class="language-python">
+def intersection(self, nums1: List[int], nums2: List[int]) -> List[int]:
+    m1 = defaultdict(int)
+    m2 = defaultdict(int)
+    res = []
+    for i in nums1:
+        m1[i] +=1
+    for j in nums2:
+        m2[j] +=1
+    for i in m1:
+        if i in m2:
+            # If we only need the unique values in the intersection
+            res += [i] 
+            # If we nedd all the intersection no matter what
+            res += [i]*min(m1[i],m2[i])
+    return res
+    </code></pre>
+    
+    <p>✅ <b>Tricks:</b></p>
+    <ul>
+        <li>It's giving O(m+n) but idk why I only beat 23.128% 🤷 </li>
+        <li>I mean it's as fast as the popular solution list(set(nums1) & set(nums2))... maybe less simplicity.</li>
+    </ul>
+    <a href="https://leetcode.cn/problems/intersection-of-two-arrays/description/" target="_blank">Now try it...</a>
+
+
+    <h3>📌 Problem 3: 202. Happy Number</h3>
+    <p>When you need to decide if there's a loop, do the membership check; when you do membership check, map is the fastest.</p>
+
+    <pre><code class="language-python">
+class Solution:
+        def isHappy(self, n: int) -> bool:
+            s = 0
+            past = []
+            while n not in past:
+                past.append(s)
+                s = 0
+                for i in list(str(n)):
+                    s += int(i)**2
+    
+                if s==1:return True
+                n = s 
+            return False
+    </code></pre>
+    
+    <p>✅ <b>Alwayas use map:</b></p>
+    <ul>
+        <li>When you need to decide if an element is in there. So using past = set() shall give you O(1) look-up time.</li>
+        <li>Using a list in this case beats 100% while using a set beats 7%... This is counter-intuitive?</li>
+        <li>🔥 So Why is the List Sometimes Faster?</li>
+
+        <li> 1️⃣ Small Input Size → List is More Memory Efficient
+                •	For small input sizes, Python’s list operations are optimized and require less overhead than a set.
+                •	Set operations have a fixed overhead for hashing and handling collisions, which might make it slower than a simple list traversal.</li>
+            
+        <li>2️⃣ Append is Always O(1) in a List
+                •	.append() in a list is always O(1).
+                •	A set must compute a hash before adding an element, which introduces some overhead.</li>
+            
+        <li>3️⃣ CPU Cache & Locality of Reference
+                •	Lists store elements sequentially in memory, while sets use a hash table with separate memory allocations.
+                •	For small numbers of elements, iterating over a small list can be faster than hashing each item.</li>
+            
+        <li> 4️⃣ Python’s Built-in Optimizations
+                •	Python’s set operations have extra bookkeeping that isn’t worth it for small-sized lists.
+                •	If n stays below 10-20 elements, a list might outperform a set due to the overhead of hash computations.</li>
+    </ul>
+    <a href="https://leetcode.cn/problems/happy-number/" target="_blank">Crack it...</a>
+
+    <h3>📌 Problem 4: 1. Two Sum </h3>
+    <p>Isn't it beautifully done with map? It's the first problem for a reason.</p>
+
+    <pre><code class="language-python">
+class Solution:
+        def twoSum(self, nums: List[int], target: int) -> List[int]:
+            m = defaultdict(int)
+            for i in range(len(nums)):
+                if target-nums[i] in m:
+                    return [m[target-nums[i]], i]
+                m[nums[i]] = i
+    return res
+    </code></pre>
+    
+    <p>✅ <b>Good thing:</b></p>
+    <ul>
+        <li>You don't have to go for two loops since you've already added new numbers and their index to the map when you're checking if they form pairs. </li>
+    </ul>
+    <a href="https://leetcode.cn/problems/two-sum/" target="_blank">Now try it...</a>
+
+    </div>
+    <a href="index.html">⬅️ Back to main page</a>
+
+</body>
+</html>
