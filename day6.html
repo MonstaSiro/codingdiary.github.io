@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 6: Hashmap Advanced</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <h2>Day 6: Hashmap Advanced</h2>
+        <p class="date">2025-02-18</p>
+        <h3>📌 Problem 1: 454. 4Sum</h3>
+    <p>Use hashmap for the pairs. Making your life easier by lowering the power of the complexity.</p>
+
+    <pre><code class="language-python">
+def fourSumCount(self, nums1: List[int], nums2: List[int], nums3: List[int], nums4: List[int]) -> int:
+    n = len(nums1)
+    sum2 = defaultdict(int)
+    for i in range(n):
+        for j in range(n):
+            sum2[nums1[i] + nums2[j]] += 1
+    cnt = 0
+    for m in range(n):
+        for k in range(n):
+            if -(nums3[m] + nums4[k]) in sum2:
+                cnt += sum2[-(nums3[m] + nums4[k])]
+        return cnt
+    </code></pre>
+    
+    <p>✅ <b>Thoughts:</b></p>
+    <ul>
+        <li>Instead of classifying it as a hashmap problem, I would say it's more about devide and conquer.</li>
+        <li>Like if you meet a high dimention complex problem, how do you reduce the complexity and make life easier by turning it into something familiar?</li>
+    </ul>
+    <a href="https://leetcode.cn/problems/4sum-ii/" target="_blank">Now try it...</a>
+
+    <h3>📌 Problem 2: 383. Ransom Note</h3>
+    <p>My intuition told me to use hashmap LOL.</p>
+
+    <pre><code class="language-python">
+def canConstruct(self, ransomNote: str, magazine: str) -> bool:
+    m = defaultdict(int)
+    for i in magazine:
+        m[i] += 1
+    for j in ransomNote:
+        if j not in m or m[j]<1: return False
+        m[j] -= 1
+    return True
+    </code></pre>
+    
+    <p>✅ <b>Tricks:</b></p>
+    <ul>
+        <li>Counter objects support rich comparisons like <=, >=, ==, and more.</li>
+        <li>So what we can do? return Counter(ransomNote) <= Counter(magazine).</li>
+    </ul>
+    <a href="https://leetcode.cn/problems/ransom-note/" target="_blank">Now try it...</a>
+
+
+    <h3>📌 Problem 3: 15. 3Sum</h3>
+    <p>Ok following problem 1, I'm putting up my edition of codes(which didn't pass all the tests since the time complexity exceeds limits.).</p>
+
+    <pre><code class="language-python">
+def threeSum(self, nums: List[int]) -> List[List[int]]:
+        n = len(nums)
+        m = defaultdict(list)
+        res = set()
+        for i in range(n):
+            for j in range((i+1), n):
+                m[nums[i]+nums[j]].append([i,j])
+        for k in range(n):
+            if -nums[k] in m:
+                for a,b in m[-nums[k]]:
+                    if k not in [a,b]:
+                        res.add(tuple(sorted([nums[k], nums[a], nums[b]])))
+        return list(res)
+    </code></pre>
+    <p>❌<b>This is giving O(n**2).</b></p>
+    <p>✅ <b>Now forget maps. Let's go back to two pointers:</b></p>
+    <pre><code class="language-python">
+def threeSum(self, nums: List[int]) -> List[List[int]]:
+        nums.sort()  # Step 1: Sort the list (O(n log n))
+        res = []
+        n = len(nums)
+
+        # Step 2: Fix one number and use two-pointer search
+        for i in range(n - 2):
+            if i > 0 and nums[i] == nums[i - 1]:  # Skip duplicates
+                continue
+            
+            l, r = i + 1, n - 1  # Two pointers
+            while l < r:
+                total = nums[i] + nums[l] + nums[r]
+                if total == 0:
+                    res.append([nums[i], nums[l], nums[r]])
+                    l += 1
+                    r -= 1
+                    
+                    # Skip duplicates
+                    while l < r and nums[l] == nums[l - 1]:
+                        l += 1
+                    while l < r and nums[r] == nums[r + 1]:
+                        r -= 1
+                elif total < 0:
+                    l += 1  # Increase sum by moving left pointer
+                else:
+                    r -= 1  # Decrease sum by moving right pointer
+
+        return res
+            </code></pre>
+
+    <ul>
+        <li>Now this is giving Sorting (O(n log n)) + two-pointer (O(n)).</li>
+        <li>While it does pass all the tests, I believe my solution is good too.</li>
+
+    <a href="https://leetcode.cn/problems/3sum/submissions/600831452//" target="_blank">Crack it...</a>
+
+    <h3>📌 Problem 4: 18. 4Sum </h3>
+    <p>I cracked it with the help of GPT... But I will try to be more independent when I revisit it.</p>
+
+    <pre><code class="language-python">
+def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
+    nums.sort()
+    res = []
+    n = len(nums)
+
+    if n<4:
+        return []
+    
+    for i in range(n-3):
+        if i>0 and nums[i] == nums[i-1]:
+            continue
+        for j in range(i+1, n-2):
+            if j>i+1 and nums[j] == nums[j-1]:
+                continue
+            l,r = j+1, n-1
+            while l<r:
+                if nums[l] + nums[r]== target - nums[i] - nums[j]:
+                    res += [[nums[i], nums[j], nums[l], nums[r]]]
+                    l += 1
+                    r -= 1
+                    while l<r and nums[l] == nums[l-1]:
+                        l += 1
+                    while l<r and nums[r] == nums[r+1]:
+                        r -= 1
+                elif nums[l] + nums[r]<target - nums[i] - nums[j]:
+                    l += 1
+                else:
+                    r -= 1
+    return res
+    </code></pre>
+    
+    <p>✅ <b>The pattern:</b></p>
+    <ul>
+        <li>When the number of varaibles goes up, consider two pointers.</li>
+        <li>With the 2 for loops and 1 while loop, it's giving an overall time complexity of O(n**3).</li>
+        <li>Now looks like we've aced all the sum problems and thank god there's no 5sum yet.</li>
+    </ul>
+    <a href="https://leetcode.cn/problems/4sum/" target="_blank">Now try it...</a>
+
+    </div>
+    <a href="index.html">⬅️ Back to main page</a>
+
+</body>
+</html>
