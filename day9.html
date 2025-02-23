@@ -3,89 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 7:  String</title>
+    <title>Day 9:  Stack and Que </title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
     <div class="container">
-        <h2>Day 8: String Advanced</h2>
-        <p class="date">2025-02-20</p>
-        <h3>📌 Problem 1: 151. Reverse Words in a String</h3>
-    <p>Seems easy crack. Intuitively, I would use .split() and .join()</p>
+        <h2>Day 9: Stack and Que</h2>
+        <p class="date">2025-02-21</p>
+        <h3>📌 Problem 1: 232. Implement Queue using Stacks</h3>
+    <p>Stack gives you a FILO order when doing calculations. If you want it the other way(FIFO), try put 2 of them head to head.</p>
 
     <pre><code class="language-python">
-class Solution:
-        def reverseWords(self, s: str) -> str:
-            words = s.split(' ')
-            return ' '.join([i for i in words[::-1] if i!=''])
+class MyQueue:
+
+        def __init__(self):
+            self.stack1 = []
+            self.stack2 = []
+    
+        def push(self, x: int) -> None:
+            self.stack1.append(x)
+    
+    
+        def pop(self) -> int:
+            peek = self.peek()
+            return self.stack2.pop()
+            
+    
+        def peek(self) -> int:
+            if self.stack2: return self.stack2[-1]
+            if not self.stack1: return -1
+            while self.stack1:
+                self.stack2.append(self.stack1.pop())
+            return self.stack2[-1]
+    
+        def empty(self) -> bool:
+            return not self.stack1 and not self.stack2
+    
+    
+    # Your MyQueue object will be instantiated and called as such:
+    # obj = MyQueue()
+    # obj.push(x)
+    # param_2 = obj.pop()
+    # param_3 = obj.peek()
+    # param_4 = obj.empty()
     </code></pre>
     
     <p>✅ <b>Thoughts:</b></p>
     <ul>
-        <li>Maybe it'll be a medium if I don't use the libraries and build-in funtions. </li>
+        <li>You can always do the sync in pop() def or peek() def. </li>
+        <li>But doing it with peek() makes more sense because it doesn't delete anything or change the stacks, so you can reuse peek and easily pop something out later with O(1). </li>
     </ul>
-    <a href="https://leetcode.cn/problems/reverse-words-in-a-string/solutions/" target="_blank">Now try it...</a>
+    <a href="https://leetcode.cn/problems/evaluate-reverse-polish-notation/solutions/667892/ni-bo-lan-biao-da-shi-qiu-zhi-by-leetcod-wue9/" target="_blank">Now try it...</a>
 
-    <h3>📌 Problem 2: Right spin strings</h3>
-    <p>Hey, I know you're thinking about slicing... Trust me, we don't have to apply for extra space.</p>
+    <h3>📌 Problem 2: 225. Implement Stack using Queues</h3>
+    <p>Now vise versa.</p>
 
     <pre><code class="language-python">
-class Solution:
-    def reverseStr(self, s: str, n: int) -> str:
-        def reverseSubstring(start: int, end: int):
-            while start < end:
-                s[start], s[end] = s[end], s[start]
-                start += 1
-                end -= 1
-        s = reverseSubstring(s)
-        return reverseSubstring(s[:n]) + reverseSubstring(s[n:])
+class MyStack:
 
+        def __init__(self):
+            self.q1 = deque()
+            self.q2 = deque()
+    
+        def push(self, x: int) -> None:
+            self.q2.append(x)
+            while self.q1:
+                self.q2.append(self.q1.popleft())
+            self.q1, self.q2 = self.q2, self.q1
+    
+        def pop(self) -> int:
+            return self.q1.popleft()
+    
+        def top(self) -> int:
+            return self.q1[0]
+    
+        def empty(self) -> bool:
+            return self.q1==deque()
     </code></pre>
     
     <p>✅ <b>Tricks:</b></p>
     <ul>
-        <li>It's hard to think of reversing the whole string.</li>
-        <li>But think of 'puting the tail to the top, but keep relative order inside the each part'.</li>
+        <li>Maintain q1 as the similar function of a stack.</li>
+        <li>So you gotta switch q1 and q1 to change the orders.</li>
     </ul>
-    <a href="https://programmercarl.com/kamacoder/0055.%E5%8F%B3%E6%97%8B%E5%AD%97%E7%AC%A6%E4%B8%B2.html#%E6%80%9D%E8%B7%AF" target="_blank">The problem and viz...</a>
+    <a href="https://leetcode.cn/problems/implement-stack-using-queues/description/" target="_blank">The problem...</a>
 
 
-    <h3>📌 Problem 3: 
-        28. Find the Index of the First Occurrence in a String</h3>
-    <p>I'm going through a naive O(m+n)(length of both strings) algo.</p>
+    <h3>📌 Problem 3: 20. Valid Parentheses</h3>
+    <p>Similar to problem4, when you have to consider the orders of incoming parentheses, use stacks.</p>
 
     <pre><code class="language-python">
 class Solution:
-    def strStr(self, haystack: str, needle: str) -> int:
-        n = len(needle)
-        if needle == haystack:return 0
-        for i in range(len(haystack)-n+1):
-            if haystack[i:i+n] == needle:
-                return i
-        return -1   
+        def isValid(self, s: str) -> bool:
+            m  = {'(':')','{':'}','[':']'}
+            stack = []
+            for i in s:
+                if i in m.keys():
+                    stack.append(i)
+                else:
+                    if not stack:
+                        return False
+                    elif i== m[stack.pop()]:
+                        continue
+                    else:
+                        return False
+            return stack ==[]
     </code></pre>
-    <p>❌<b>I don't know KMP. Let alone using it.</b></p>
-    <p>✅ <b>But I did beat 100%.</b></p>
+    <p>✅ <b>I use the map to better match the parentheses.</b></p>
     </ul>
-    <a href="https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/solutions/575568/shua-chuan-lc-shuang-bai-po-su-jie-fa-km-tb86/" target="_blank">Now try it...</a>
+    <a href="https://leetcode.cn/problems/valid-parentheses/description/" target="_blank">Now try it...</a>
 
-    <h3>📌 Problem 4: 
-        459. Repeated Substring Pattern</h3>
-    <p>Wasn't sure how to start: what substring? what pattern? how to decide? Until I figured out all I need is a dividend larger than 2 and a check of repetitive letters.</p>
+    <h3>📌 Problem 4: 1047.Remove All Adjacent Duplicates In String </h3>
+    <p>The trick is considering when you vanish repetitive letters there can be new repetitives generated! Use stack to keep the result then!</p>
 
     <pre><code class="language-python">
-class Solution:
-        def repeatedSubstringPattern(self, s: str) -> bool:
-            n = len(s)
-            for i in range(1, n//2+1):
-                if n%i ==0:
-                    if all([s[j] == s[j - i] for j in range(i,n)]):
-                        return True
-            return False  
+def removeDuplicates(self, s: str) -> str:
+    res = []
+    for a in s:
+        if res:
+            if a ==res[-1]:
+                res.pop()
+                continue
+        res.append(a)
+    return ''.join(res)
     </code></pre>
     </ul>
-    <a href="https://leetcode.cn/problems/repeated-substring-pattern/" target="_blank">Now try it...</a>
+    <a href="https://leetcode.cn/problems/remove-all-adjacent-duplicates-in-string/" target="_blank">Now try it...</a>
 
     </div>
     <a href="index.html">⬅️ Back to main page</a>
