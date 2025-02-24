@@ -3,89 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 7:  String</title>
+    <title>Day 10:  Stack and Que II</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
     <div class="container">
-        <h2>Day 8: String Advanced</h2>
-        <p class="date">2025-02-20</p>
-        <h3>📌 Problem 1: 151. Reverse Words in a String</h3>
-    <p>Seems easy crack. Intuitively, I would use .split() and .join()</p>
+        <h2>Day 9: Stack and Que</h2>
+        <p class="date">2025-02-21</p>
+        <h3>📌 Problem 1: 150. Evaluate Reverse Polish Notation</h3>
+    <p>Stack gives you a FILO order when doing calculations.</p>
 
     <pre><code class="language-python">
-class Solution:
-        def reverseWords(self, s: str) -> str:
-            words = s.split(' ')
-            return ' '.join([i for i in words[::-1] if i!=''])
+def evalRPN(self, tokens: List[str]) -> int:
+    stack = []
+    symbols = ['+', '-', '*', '/']
+    for i in tokens:
+        if i not in symbols:
+            stack.append(i)
+        else:
+            a = int(stack.pop())
+            b = int(stack.pop())
+            print(a,b)
+            if i=='-':
+                stack.append( b-a )
+            elif i =='+':
+                stack.append(a+b)
+            elif i== '/':
+                stack.append( b/a)
+            elif i =='*':
+                stack.append(b*a)
+    return int(stack[0])
+                        
+    
     </code></pre>
     
     <p>✅ <b>Thoughts:</b></p>
     <ul>
-        <li>Maybe it'll be a medium if I don't use the libraries and build-in funtions. </li>
+        <li>It always has more than 2 nums to operate if it's a valid reverse Polish notation on so we can always pop() twice. </li>
+        <li>If you want to skip the mannual writing of calculation, make a map to store all the ops. </li>
     </ul>
-    <a href="https://leetcode.cn/problems/reverse-words-in-a-string/solutions/" target="_blank">Now try it...</a>
+    <a href="https://leetcode.cn/problems/evaluate-reverse-polish-notation/solutions/667892/ni-bo-lan-biao-da-shi-qiu-zhi-by-leetcod-wue9/" target="_blank">Now try it...</a>
 
-    <h3>📌 Problem 2: Right spin strings</h3>
-    <p>Hey, I know you're thinking about slicing... Trust me, we don't have to apply for extra space.</p>
+    <h3>📌 Problem 2: 239. Sliding Window Maximum</h3>
+    <p>It's not so obvious to use heap until I wrote a simple sliding window and exceeded time limit.</p>
 
     <pre><code class="language-python">
 class Solution:
-    def reverseStr(self, s: str, n: int) -> str:
-        def reverseSubstring(start: int, end: int):
-            while start < end:
-                s[start], s[end] = s[end], s[start]
-                start += 1
-                end -= 1
-        s = reverseSubstring(s)
-        return reverseSubstring(s[:n]) + reverseSubstring(s[n:])
-
+        def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+            n = len(nums)
+            q = [(-nums[i], i) for i in range(k)]
+            heapq.heapify(q)
+    
+            ans = [-q[0][0]]
+            for i in range(k ,n):
+                heapq.heappush(q, (-nums[i],i))
+                while q[0][1] <= i-k:
+                    heapq.heappop(q)
+                ans.append(-q[0][0])
+            return ans
     </code></pre>
     
-    <p>✅ <b>Tricks:</b></p>
+    <p>✅ <b>It's a hard so don't waste too much time:</b></p>
     <ul>
-        <li>It's hard to think of reversing the whole string.</li>
-        <li>But think of 'puting the tail to the top, but keep relative order inside the each part'.</li>
+        <li>Go straight to solution so I know how to use heap and how heap maintains a structure that always puts the minimum at the root.</li>
     </ul>
-    <a href="https://programmercarl.com/kamacoder/0055.%E5%8F%B3%E6%97%8B%E5%AD%97%E7%AC%A6%E4%B8%B2.html#%E6%80%9D%E8%B7%AF" target="_blank">The problem and viz...</a>
+    <a href="https://leetcode.cn/problems/sliding-window-maximum/submissions/602459902/" target="_blank">The problem and viz...</a>
 
 
     <h3>📌 Problem 3: 
-        28. Find the Index of the First Occurrence in a String</h3>
-    <p>I'm going through a naive O(m+n)(length of both strings) algo.</p>
+        347. Top K Frequent Elements</h3>
+    <p>Intuitively I'm recalling map.</p>
 
     <pre><code class="language-python">
 class Solution:
-    def strStr(self, haystack: str, needle: str) -> int:
-        n = len(needle)
-        if needle == haystack:return 0
-        for i in range(len(haystack)-n+1):
-            if haystack[i:i+n] == needle:
-                return i
-        return -1   
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        m = defaultdict(int)
+        for i in nums:
+            m[i] +=1
+        sorted_m = sorted(m, key=lambda x: m[x], reverse = True)
+        return sorted_m[:k] 
     </code></pre>
-    <p>❌<b>I don't know KMP. Let alone using it.</b></p>
-    <p>✅ <b>But I did beat 100%.</b></p>
-    </ul>
-    <a href="https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/solutions/575568/shua-chuan-lc-shuang-bai-po-su-jie-fa-km-tb86/" target="_blank">Now try it...</a>
-
-    <h3>📌 Problem 4: 
-        459. Repeated Substring Pattern</h3>
-    <p>Wasn't sure how to start: what substring? what pattern? how to decide? Until I figured out all I need is a dividend larger than 2 and a check of repetitive letters.</p>
-
+    <p>❌<b>It‘s not the best solution, giving an O(N) + O(nlogn) ～ O(nlogn). But at least it's easy to think of.</b></p>
+    <p>✅ <b>The right way to reduce complexity: use heap.</b></p>
     <pre><code class="language-python">
+import heapq
+
 class Solution:
-        def repeatedSubstringPattern(self, s: str) -> bool:
-            n = len(s)
-            for i in range(1, n//2+1):
-                if n%i ==0:
-                    if all([s[j] == s[j - i] for j in range(i,n)]):
-                        return True
-            return False  
-    </code></pre>
+    def topKFrequent(self, nums, k):
+        minHeap = []
+        for num, freq in frequencyMap.items():
+            # 如果堆还没满（即堆中元素少于k个），就直接添加当前元素
+            if len(minHeap) < k:
+                heapq.heappush(minHeap, (freq, num))
+            # 如果堆已满，且当前元素的频率高于堆顶元素的频率，
+            # 则替换堆顶元素（即频率最低的元素）。
+            elif freq > minHeap[0][0]:
+                heapq.heappushpop(minHeap, (freq, num))
+
+        # 最后，从小顶堆中提取前k个频率最高的元素。
+        topK = [num for freq, num in minHeap]
+        return topK
+            </code></pre>
+            <p> This is giving O(nlogk) since it takes logk to maintain a k-minheap.</p>
     </ul>
-    <a href="https://leetcode.cn/problems/repeated-substring-pattern/" target="_blank">Now try it...</a>
+    <a href="https://leetcode.cn/problems/top-k-frequent-elements/" target="_blank">Now try it...</a>
 
     </div>
     <a href="index.html">⬅️ Back to main page</a>
