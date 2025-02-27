@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 12:  Binary Tree II</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <h2>Day 12:  Binary Tree II</h2>
+        <p class="date">2025-02-27</p>
+        <h3>📌 Problem 1: 226. Invert Binary Tree</h3>
+    <p>Before solving any problems, get to know the orders of going through a binary tree.</p>
+
+    <pre><code class="language-python">
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        if not root: return
+        children = [root]
+        while children: 
+            new_children = []
+            for node in children:
+                if node.left:
+                    new_children.append(node.left)
+                if node.right:
+                    new_children.append(node.right)
+                node.left, node.right = node.right, node.left
+            children = new_children
+        return root
+                    
+    </code></pre>
+    
+    <p>✅ <b>Thoughts:</b></p>
+    <ul>
+        <li>Since it's swapping the left and right children, I'd go with a root-left-right preorder traversal.  </li>
+        <li>If I go with left-mid-right, I'll swap the root at some point and go to the right children, which is already swapped into the left, meaning we'd go repetitively to the original left child again. </li>
+        <li> It can be doable to go inorder traversal, but need to reconsider the order, like you can go from the opposite side whenever we go to the next layer.</li>
+    </ul>
+    <a href="https://leetcode.cn/problems/invert-binary-tree/" target="_blank">Now try it...</a>
+
+    <h3>📌 Problem 2: 101. Symmetric Tree</h3>
+    <p>This is a similar problem to problem 1. Symmetric? Meaning if you invert the binaray tree you got the same tree.</p>
+    <p>So you can copy paste the code and add a 'return root == new root'.</p>
+    <p>But I chose to compare if the lists of values in each layer are symmertric. For None children, add a 0.1 as a placeholder.</p>
+
+    <pre><code class="language-python">
+def isSymmetric(self, root: Optional[TreeNode]) -> bool:
+    if not root: return True
+    children = [root]
+    while set(children) != {0.1}:
+        new_layer = []
+        vals = []
+        for i in children:
+            if i==0.1: 
+                vals.append(0.1)
+                continue
+            vals.append(i.val)
+            if i.left: new_layer.append(i.left)
+            else: new_layer.append(0.1)
+            if i.right: new_layer.append(i.right)
+            else: new_layer.append(0.1)
+        if vals != vals[::-1]:return False
+        children = new_layer
+    return True
+    </code></pre>
+    
+    <p>✅ <b>It works but only beat 10%. The set(), [::-1] are time consuming.</b></p>
+    <p> Or, you can use the beautifully written recursion:</p>
+    <pre><code class="language-python">
+def isSymmetric(self, root: Optional[TreeNode]) -> bool:
+        def recur(L, R):
+            if not L and not R: return True
+            if not L or not R or L.val != R.val: return False
+            return recur(L.left, R.right) and recur(L.right, R.left)
+
+        return not root or recur(root.left, root.right)
+    </code></pre>
+    <a href="https://leetcode.cn/problems/symmetric-tree/description/" target="_blank">The problem</a>
+
+
+    <h3>📌 Problem 3: 
+        104. Maximum Depth of Binary Tree</h3>
+    <p>Similarly, we can use recursion as last problem.</p>
+
+    <pre><code class="language-python">
+def maxDepth(self, root: Optional[TreeNode]) -> int:
+    if not root:return 0
+    def recur(node):
+        if not node: return 0
+        if not node.left and not node.right:
+            return 1
+        return max(recur(node.left)+1, recur(node.right)+1)
+    return recur(root)
+    </code></pre>
+    <p>✅ <b> It's same methodology with dfs.</b></p>
+    <p> Or, to reuse the function itself so we don't have layered functions:</p>
+    <pre><code class="language-python">
+def maxDepth(self, root):
+    if root is None: 
+        return 0 
+    else: 
+        left_height = self.maxDepth(root.left) 
+        right_height = self.maxDepth(root.right) 
+        return max(left_height, right_height) + 1 
+        </code></pre>
+
+    <a href="https://leetcode.cn/problems/maximum-depth-of-binary-tree/description/" target="_blank">Now try it...</a>
+
+    <h3>📌 Problem 4: 
+        111. Minimum Depth of Binary Tree</h3>
+    <p>Similarly, we can use the recursion function as last problem.</p>
+
+    <pre><code class="language-python">
+def minDepth(self, root: Optional[TreeNode]) -> int:
+    if not root:return 0
+    layer = 1
+    def recur(node):
+        if not node.left and not node.right:
+            return 1
+        elif not node.left:
+            return recur(node.right) +1
+        elif not node.right:
+            return recur(node.left) +1
+        else:
+            return min(recur(node.left)+1, recur(node.right)+1)
+    return recur(root)
+    </code></pre>
+    <p>✅ <b> Thoughts:</b></p>
+    <p> Note that it's not good to recursively use the minDepth the function itself, since it cannot tell it a node is a leaf or not.</p>
+    <p> Or, if you really want to use, make sure you only recursively dive into the branch when it's not None by using if. In this case, only when the root is emplty does it return 0.</p>
+    <pre><code class="language-python">
+def minDepth(self, root: TreeNode) -> int:
+    if not root:
+        return 0
+    
+    if not root.left and not root.right:
+        return 1
+    
+    min_depth = 10**9
+    if root.left:
+        min_depth = min(self.minDepth(root.left), min_depth)
+    if root.right:
+        min_depth = min(self.minDepth(root.right), min_depth)
+    
+    return min_depth + 1
+        </code></pre>
+
+    <a href="https://leetcode.cn/problems/minimum-depth-of-binary-tree/description/" target="_blank">Now try it...</a>
+
+    </div>
+    <a href="index.html">⬅️ Back to main page</a>
+
+</body>
+</html>
