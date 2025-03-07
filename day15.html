@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 13:  Binary Tree III</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <h2>Day 13:  Binary Tree III</h2>
+        <p class="date">2025-03-02</p>
+        <p> Today we're cracking all the representitive binary tree problems and aiming at a full understanding of all the operations related to binary tree.</p>
+        <h3>📌 Problem 1: 110. Balanced Binary Tree</h3>
+    <p>You have to reuse the height function to decide if it's a balanced tree so write it again.</p>
+
+    <pre><code class="language-python">
+class Solution:
+    def isBalanced(self, root: Optional[TreeNode]) -> bool:
+        def height(root):
+            if not root:return 0
+            return max(height(root.left), height(root.right))+1
+        if not root: return True
+        return abs(height(root.left)-height(root.right))<=1 and self.isBalanced(root.left) and self.isBalanced(root.right)
+    </code></pre>
+    
+    <p>✅ <b>Thoughts:</b></p>
+    <ul>
+        <li>I tried to go direct to recursion but found out it only decides if current root is balanced and can't go deeper. </li>
+        <li>So never take the shortcut if detouring is neccessary...</li>
+    </ul>
+    <a href="https://leetcode.cn/problems/balanced-binary-tree/" target="_blank">Now try it...</a>
+
+    <h3>📌 Problem 2: 257. Binary Tree Paths</h3>
+    <p>Easy dfs but need to add the combiner/paser '->' at the right line or you'll get a tedious solution(like mine).</p>
+
+    <pre><code class="language-python">
+class Solution:
+    def binaryTreePaths(self, root: Optional[TreeNode]) -> List[str]:
+        self.res = []
+        def dfs(node, path):
+            if not node.left and not node.right:
+                self.res += [path + '->' + str(node.val)]
+            else:
+                if node.left:
+                    dfs(node.left, path + '->' + str(node.val))
+                if node.right:
+                    dfs(node.right, path + '->' + str(node.val))
+        if not root: return []
+        if not root.right and not root.left: return [str(root.val)]
+        if root.right: dfs(root.right, str(root.val))
+        if root.left: dfs(root.left, str(root.val))
+
+        return self.res
+    </code></pre>
+    
+    <p>✅ <b>If you wanna go neater:</b></p>
+    <pre><code class="language-python">
+class Solution:
+        def binaryTreePaths(self, root):
+            """
+            :type root: TreeNode
+            :rtype: List[str]
+            """
+            def construct_paths(root, path):
+                if root:
+                    path += str(root.val)
+                    if not root.left and not root.right:  # 当前节点是叶子节点
+                        paths.append(path)  # 把路径加入到答案中
+                    else:
+                        path += '->'  # 当前节点不是叶子节点，继续递归遍历
+                        construct_paths(root.left, path)
+                        construct_paths(root.right, path)
+    
+            paths = []
+            construct_paths(root, '')
+            return paths
+            </code></pre>
+    <a href="https://leetcode.cn/problems/binary-tree-paths/description/" target="_blank">The problem...</a>
+
+
+    <h3>📌 Problem 3: 
+       404. Sum of Left Leaves</h3>
+    <p>Intuitively I'm recalling map.</p>
+
+    <pre><code class="language-python">
+class Solution:
+    def sumOfLeftLeaves(self, root: Optional[TreeNode]) -> int:
+        self.sum = 0
+        def dfs(node):
+            if node and node.left:
+                leaf = node.left
+                if not leaf.left and not leaf.right:
+                    self.sum += leaf.val
+                else:
+                    dfs(leaf)
+            elif not node:
+                return
+            dfs(node.right)
+        dfs(root)
+        return self.sum
+    </code></pre>
+    <p>❌<b>Don't stop once you find a left leaf. You'll have to tour the right side anyway.</b></p>
+    <p>✅ <b>Adding that and I nailed it at a 100% slay!</b></p>
+    <a href="https://leetcode.cn/problems/sum-of-left-leaves/" target="_blank">Now try it...</a>
+
+    <h3>📌 Problem 4: 
+        222. Count Complete Tree Nodes</h3>
+     <p>Is there a way to not traversal since it's in such an organized structure?</p>
+ 
+     <pre><code class="language-python">
+class Solution:
+        def countNodes(self, root: Optional[TreeNode]) -> int:
+            if not root: return 0
+            layer = 0
+            res = 1
+            cur = [root]
+            while cur:
+                nextlayer = []
+                for i in cur:
+                    if i.left:
+                        res += 1
+                        nextlayer.append(i.left)
+                    else:
+                        return res
+                    if i.right:
+                        res += 1
+                        nextlayer.append(i.right)
+                    else:
+                        return res
+                cur = nextlayer
+            return res
+     </code></pre>
+     <p>✅<b>Going layer by layer is very straightforward and easy to think of.</b></p>
+     <p>✅ <b>But yes of course we can do better without traversing the full tree! Here we need to introduce Full Binary Trees so we can easily use the formula 2**depth -1 to save time.</b></p>
+     <pre><code class="language-python">
+class Solution:
+    # 求二叉树的深度
+    def height(self, root:TreeNode):
+        height = 0
+        while root:
+            root = root.left
+            height += 1
+
+        return height
+
+    def countNodes(self, root: TreeNode) -> int:
+        # 空树，节点数为 0
+        if root == None:
+            return 0
+        # 求左子树和右子树的深度
+        leftHeight = self.height(root.left)
+        rightHeight = self.height(root.right)
+        
+        # 如果左子树的深度 = 右子树的深度，左子树为满二叉树
+        # 节点数 = 左子树的深度 + 右子树的深度 + 根节点
+        if leftHeight == rightHeight:
+            return (2 ** leftHeight - 1) + self.countNodes(root.right) + 1
+        # 如果左子树的深度 ＞ 右子树的深度，右子树为满二叉树
+        # 节点数 = 左子树的深度 + 右子树的深度 + 根节点
+        else:
+            return (2 ** rightHeight - 1) + self.countNodes(root.left) + 1
+     </code></pre>
+     <a href="https://leetcode.cn/problems/count-complete-tree-nodes/description/" target="_blank">Now try it...</a>
+
+
+     <h3>📌 Problem 5: 
+        513. Find Bottom Left Tree Value</h3>
+     <p>Now we're familiar with layer order traversal. This won't take too long as long as you set the right stop condistion for while loop.</p>
+ 
+     <pre><code class="language-python">
+class Solution:
+    def findBottomLeftValue(self, root: Optional[TreeNode]) -> int:
+        if not root: return 
+        if not root.left and not root.right: return root.val
+        layer = [root]
+        new = [root]
+        while new:
+            layer = new
+            new = []
+            for i in layer:
+                if i.left: new.append(i.left)
+                if i.right: new.append(i.right)
+        return layer[0].val
+     </code></pre>
+     <p>✅ <b>It's beating 100%。 You can use dfs too but won't neccessarily be more efficient and the function would be less readable.</b></p>
+     <a href="https://leetcode.cn/problems/find-bottom-left-tree-value/description/" target="_blank">Now try it...</a>
+
+     <h3>📌 Problem 6: 
+        112. Path Sum</h3>
+     <p>Easy path searching algorithm to  decide if a path that meets the condition exists. DFS is your goto.</p>
+ 
+     <pre><code class="language-python">
+class Solution:
+    def hasPathSum(self, root: Optional[TreeNode], targetSum: int) -> bool:
+        if not root: return False
+        def dfs(node, path):
+            if not node:
+                return False
+            if not node.left and not node.right:
+                return node.val == path
+            if dfs(node.left, path - node.val) or dfs(node.right, path - node.val):
+                return True 
+            return False
+        return dfs(root, targetSum)
+     </code></pre>
+     <p>✅ <b>As long as any child has a legit path we're goot to go so using a 'or' condition.</b></p>
+     <a href="https://leetcode.cn/problems/path-sum/" target="_blank">Now try it...</a>
+
+
+     <h3>📌 Problem 7: 
+        106. Construct Binary Tree from Inorder and Postorder Traversal</h3>
+     <p>Easy recursion since once you can split the values of left and right children from the two lists, you can recursively build child trees.</p>
+ 
+     <pre><code class="language-python">
+class Solution:
+        def buildTree(self, inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
+            if not inorder or not postorder: return None
+            val = postorder[-1]
+            root = TreeNode(val)
+            if len(inorder) == 1:
+                return root
+            i = inorder.index(val)
+            left_tree, right_tree = inorder[:i], inorder[i+1:]
+            left_post = [j for j in postorder if j in left_tree]
+            right_post = [j for j in postorder if j not in left_tree and j!=val]
+            root.left = self.buildTree(left_tree, left_post)
+            root.right = self.buildTree(right_tree, right_post)
+            return root
+     </code></pre>
+     <p>❌<b>Even it works well with most cases, there's still one corner case where it exceeds time limit because the .index() can take O(n) and in the full recursion it taks O(n**2).</b></p>
+     <p>✅<b>But as long as you get rid of the .index() in all the recursion function and code it as a global thing in the main function, you'd only need to hashmap it once with one O(n)</b></p>
+     <p> And since we're only playing with the lists' index here without changing or making any lists, we can use indices in the recursion to be neat.</p>
+     <pre><code class="language-python">
+class Solution:
+    def buildTree(self, inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
+        # Step 1: Create a Hash Map for inorder indices (O(n))
+        inorder_index = {val: i for i, val in enumerate(inorder)}
+        post_index = len(postorder) - 1  # Start from the last index of postorder
+        
+        # Step 2: Define Recursive Function
+        def helper(left: int, right: int) -> Optional[TreeNode]:
+            nonlocal post_index
+            if left > right:
+                return None
+
+            # Step 3: Get the Root Value & Move Postorder Index
+            val = postorder[post_index]
+            post_index -= 1
+            root = TreeNode(val)
+
+            # Step 4: Split the inorder array efficiently using the hash map
+            inorder_pos = inorder_index[val]
+
+            # Step 5: Build Right Subtree First (Because Postorder is L R Root)
+            root.right = helper(inorder_pos + 1, right)
+            root.left = helper(left, inorder_pos - 1)
+
+            return root
+
+        return helper(0, len(inorder) - 1)
+        </code></pre>
+    <p> And boom! You have a fast and elegant solution.</p>
+     <a href="https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/description/" target="_blank">Now try it...</a>
+
+    </div>
+    <a href="index.html">⬅️ Back to main page</a>
+
+</body>
+</html>

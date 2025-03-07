@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 13:  Binary Tree IV</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <h2>Day 13:  Binary Tree III</h2>
+        <p class="date">2025-03-04</p>
+        <p> Now we know very well about binary trees, let's crack some solid medium difficulty problems.</p>
+        <h3>📌 Problem 1: 654. Maximum Binary Tree</h3>
+    <p>Now you know hot to construct a tree from inorder and postorder, you can easily do the same from one list.</p>
+
+    <pre><code class="language-python">
+        class Solution:
+        def constructMaximumBinaryTree(self, nums: List[int]) -> Optional[TreeNode]:
+            if not nums:
+                return None
+            
+            val = max(nums)
+            i = nums.index(val)
+            root = TreeNode(val)
+            root.left = self.constructMaximumBinaryTree(nums[:i])
+            root.right = self.constructMaximumBinaryTree(nums[i+1:])
+            return root
+    </code></pre>
+    
+    <p>✅ <b>Thoughts:</b></p>
+    <ul>
+        <li>Yes this passed, but I'm lazily using .index(). This might drag me slower by a bit. </li>
+    </ul>
+    <a href="https://leetcode.cn/problems/maximum-binary-tree/description/" target="_blank">Now try it...</a>
+
+    <h3>📌 Problem 2: 617. Merge Two Binary Trees</h3>
+    <p>Easy dfs.</p>
+
+    <pre><code class="language-python">
+class Solution:
+    def mergeTrees(self, root1: Optional[TreeNode], root2: Optional[TreeNode]) -> Optional[TreeNode]:
+        if root1 and root2:
+            root = TreeNode(root1.val+ root2.val)
+            root.left = self.mergeTrees(root1.left, root2.left)
+            root.right = self.mergeTrees(root1.right, root2.right)
+        elif root1:
+            root = root1
+        elif root2:
+            root = root2
+        else:
+            return None
+        return root
+    </code></pre>
+    
+    <p>✅ <b>Beat 100%</b></p>
+    <a href="https://leetcode.cn/problems/merge-two-binary-trees/" target="_blank">The problem...</a>
+
+
+    <h3>📌 Problem 3: 
+        700. Search in a Binary Search Tree</h3>
+    <p>Similar dfs traversal to last problem.</p>
+
+    <pre><code class="language-python">
+class Solution:
+        def searchBST(self, root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
+            if not root:
+                return None
+            if root.val == val:
+                return root
+            
+            else:
+                l, r = self.searchBST(root.left, val),self.searchBST(root.right, val)
+                if l: return l
+                if r: return r
+            return None
+    </code></pre>
+    <p>❌<b>Not very efficient and didn't use the information of a BST.</b></p>
+    <p>✅ <b>Noticing that every number on theleft is smaller than root and right is larger:</b></p>
+
+    <pre><code class="language-python">
+        class Solution:
+        def searchBST(self, root: TreeNode, val: int) -> TreeNode:
+            if root is None:
+                return None
+            if val == root.val:
+                return root
+            return self.searchBST(root.left if val < root.val else root.right, val)
+    
+    </code></pre>
+    <a href="https://leetcode.cn/problems/search-in-a-binary-search-tree/description/" target="_blank">Now try it...</a>
+
+    <h3>📌 Problem 4: 
+        98. Validate Binary Search Tree</h3>
+     <p>EVERY NODES ON EACH SIDE SHALL FOLLOW THE HIERACHY, NOT ONLY THE IMMEDIATE CHILDREN!</p>
+ 
+     <pre><code class="language-python">
+class Solution:
+    def isValidBST(self, root: Optional[TreeNode]) -> bool:
+        def validate(node, low=float('-inf'), high=float('inf')):
+            if not node:
+                return True
+            if not (low < node.val < high):  # This guarantees BST validity!
+                return False
+            return validate(node.left, low, node.val) and validate(node.right, node.val, high)
+        return validate(root)
+     </code></pre>
+     <p>✅<b> By passing down the low and high to each side of recursion, you can always inherit the limits of a parent node and keep all the children in range as you go deep.</b></p>
+     <p>✅ <b>(Took me a while to figure it out.)</b></p>
+   
+     <a href="https://leetcode.cn/problems/validate-binary-search-tree/description/" target="_blank">Now try it...</a>
+
+
+    </div>
+    <a href="index.html">⬅️ Back to main page</a>
+
+</body>
+</html>
