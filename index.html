@@ -1,41 +1,897 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My LeetCode Challenge Journaling</title>
-    <link rel="stylesheet" href="main-style.css">  <!-- ✅ Only for the main page -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flora Gong — Product Data Scientist</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+
+/* === VIEWPORT BASE CSS (MANDATORY) === */
+html, body { height: 100%; overflow-x: hidden; }
+html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+.slide {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+:root {
+    --title-size: clamp(1.5rem, 5vw, 4rem);
+    --h2-size: clamp(1.25rem, 3.5vw, 2.5rem);
+    --h3-size: clamp(1rem, 2.5vw, 1.75rem);
+    --body-size: clamp(0.75rem, 1.5vw, 1.125rem);
+    --small-size: clamp(0.65rem, 1vw, 0.875rem);
+    --slide-padding: clamp(1.5rem, 5vw, 5rem);
+    --content-gap: clamp(0.5rem, 2vw, 2rem);
+}
+img, .image-container { max-width: 100%; max-height: min(50vh, 400px); object-fit: contain; }
+@media (max-height: 700px) {
+    :root { --slide-padding: clamp(0.75rem, 3vw, 2rem); --title-size: clamp(1.25rem, 4.5vw, 2.5rem); }
+}
+@media (max-height: 600px) {
+    :root { --slide-padding: clamp(0.5rem, 2.5vw, 1.5rem); --title-size: clamp(1.1rem, 4vw, 2rem); --body-size: clamp(0.7rem, 1.2vw, 0.95rem); }
+    .nav-dots, .keyboard-hint { display: none; }
+}
+@media (max-height: 500px) {
+    :root { --slide-padding: clamp(0.4rem, 2vw, 1rem); --title-size: clamp(1rem, 3.5vw, 1.5rem); --body-size: clamp(0.65rem, 1vw, 0.85rem); }
+}
+@media (max-width: 600px) {
+    :root { --title-size: clamp(1.25rem, 7vw, 2.5rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+    html { scroll-behavior: auto; }
+}
+
+/* === ELECTRIC STUDIO THEME === */
+:root {
+    --bg-white: #ffffff;
+    --bg-dark: #0a0a0a;
+    --bg-blue: #2B44FF;
+    --text-dark: #0a0a0a;
+    --text-light: #ffffff;
+    --text-muted: #8890a4;
+    --text-muted-dark: #5a5a5a;
+    --accent: #2B44FF;
+    --font: 'Manrope', sans-serif;
+    --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg-dark); }
+
+/* === REVEAL ANIMATIONS === */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.55s var(--ease-expo), transform 0.55s var(--ease-expo); }
+.reveal-left { opacity: 0; transform: translateX(-28px); transition: opacity 0.55s var(--ease-expo), transform 0.55s var(--ease-expo); }
+.reveal-right { opacity: 0; transform: translateX(28px); transition: opacity 0.55s var(--ease-expo), transform 0.55s var(--ease-expo); }
+.slide.visible .reveal,
+.slide.visible .reveal-left,
+.slide.visible .reveal-right { opacity: 1; transform: translate(0,0); }
+.d1 { transition-delay: 0.05s; } .d2 { transition-delay: 0.15s; }
+.d3 { transition-delay: 0.25s; } .d4 { transition-delay: 0.35s; }
+.d5 { transition-delay: 0.45s; } .d6 { transition-delay: 0.55s; }
+.d7 { transition-delay: 0.65s; } .d8 { transition-delay: 0.75s; }
+
+/* === PROGRESS BAR === */
+.progress-bar {
+    position: fixed; top: 0; left: 0; height: 2px;
+    background: var(--accent); z-index: 1000;
+    transition: width 0.3s ease; pointer-events: none; width: 0%;
+}
+
+/* === NAV DOTS === */
+.nav-dots {
+    position: fixed; right: clamp(14px, 2.5vw, 24px);
+    top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 9px;
+    z-index: 900; list-style: none; padding: 8px 3px;
+}
+.nav-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: rgba(180,180,180,0.2); border: 1px solid rgba(180,180,180,0.35);
+    cursor: pointer; transition: background 0.2s, transform 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.45);
+}
+.nav-dot.active { background: var(--accent); border-color: var(--accent); transform: scale(1.5); box-shadow: 0 0 8px rgba(43,68,255,0.5); }
+.nav-dot:hover:not(.active) { background: rgba(180,180,180,0.5); transform: scale(1.2); }
+
+/* =============================================
+   SLIDE 1 — TITLE  (white top / dark bottom)
+   ============================================= */
+.slide-title { flex-direction: column; }
+
+.slide-title .top-panel {
+    flex: 0 0 56%; background: var(--bg-white);
+    padding: var(--slide-padding); position: relative;
+    overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end;
+}
+.slide-title .top-panel::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background-image: linear-gradient(#e8e8e8 1px, transparent 1px), linear-gradient(90deg, #e8e8e8 1px, transparent 1px);
+    background-size: 44px 44px; opacity: 0.7;
+}
+.slide-title .top-panel::after {
+    content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 5px; background: var(--accent);
+}
+.title-corner {
+    position: absolute; top: clamp(14px, 2.5%, 22px); right: clamp(20px, 3%, 40px);
+    font-size: clamp(0.52rem, 0.85vw, 0.68rem); font-weight: 600;
+    letter-spacing: 0.08em; color: #aaa; z-index: 2;
+    max-width: clamp(180px, 40%, 420px); text-align: right; line-height: 1.7;
+}
+.title-kicker {
+    position: relative;
+    font-size: clamp(0.6rem, 1.1vw, 0.75rem); font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent);
+    margin-bottom: clamp(8px, 1.5vh, 16px);
+}
+.title-name {
+    position: relative;
+    font-size: clamp(3.5rem, 9vw, 9rem); font-weight: 800;
+    color: var(--text-dark); line-height: 0.9; letter-spacing: -0.03em;
+}
+.title-name em { font-style: normal; color: var(--accent); }
+
+.slide-title .bottom-panel {
+    flex: 1; background: var(--bg-dark);
+    padding: clamp(0.8rem, 2.5%, 2rem) var(--slide-padding);
+    display: flex; align-items: center; justify-content: space-between;
+    position: relative; overflow: hidden; gap: clamp(12px, 2vw, 24px);
+}
+.slide-title .bottom-panel::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background-image: radial-gradient(circle, #1e1e1e 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+.title-bottom-left { position: relative; z-index: 1; }
+.title-location {
+    font-size: clamp(0.7rem, 1.3vw, 0.95rem); font-weight: 700;
+    color: var(--text-light); letter-spacing: 0.05em;
+}
+.title-tagline {
+    margin-top: 4px; font-size: clamp(0.6rem, 1vw, 0.8rem);
+    font-weight: 400; color: var(--text-muted); letter-spacing: 0.03em;
+}
+.pills { display: flex; flex-wrap: wrap; gap: 7px; position: relative; z-index: 1; }
+.pill {
+    font-size: clamp(0.55rem, 0.9vw, 0.7rem); font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 2px;
+    border: 1px solid #252525; color: #555; background: transparent;
+}
+.pill.active { border-color: var(--accent); color: var(--accent); }
+
+/* =============================================
+   SLIDE 2 — STATS  (dark)
+   ============================================= */
+.slide-stats { background: var(--bg-dark); justify-content: center; padding: var(--slide-padding); }
+.slide-stats::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 50px 50px;
+}
+.stats-inner { position: relative; z-index: 1; max-width: min(90vw, 1000px); width: 100%; margin: 0 auto; }
+.section-kicker {
+    font-size: clamp(0.6rem, 1vw, 0.75rem); font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent);
+    margin-bottom: clamp(16px, 4vh, 40px);
+}
+.stats-row { display: flex; align-items: flex-start; gap: clamp(20px, 4vw, 60px); flex-wrap: wrap; }
+.stat-item { flex: 1; min-width: 100px; }
+.stat-num {
+    font-size: clamp(2.8rem, 7vw, 6.5rem); font-weight: 800;
+    color: var(--text-light); line-height: 1; letter-spacing: -0.03em;
+}
+.stat-num .accent { color: var(--accent); }
+.stat-desc {
+    margin-top: clamp(6px, 1vh, 12px); font-size: clamp(0.62rem, 1.1vw, 0.82rem);
+    font-weight: 400; color: var(--text-muted); line-height: 1.5; max-width: 200px;
+}
+.stats-vdivider { width: 1px; background: #1e1e1e; align-self: stretch; flex-shrink: 0; }
+.stats-footer {
+    margin-top: clamp(24px, 5vh, 52px); font-size: clamp(0.9rem, 2vw, 1.4rem);
+    font-weight: 300; color: #2e2e2e; letter-spacing: 0.02em; line-height: 1.5;
+}
+.stats-footer strong { color: #555; font-weight: 600; }
+
+/* =============================================
+   SLIDE 3 — MONETARIA  (white + left blue bar)
+   ============================================= */
+.slide-experience { background: var(--bg-white); padding: var(--slide-padding); justify-content: center; }
+.slide-experience::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background-image: linear-gradient(#ebebeb 1px, transparent 1px), linear-gradient(90deg, #ebebeb 1px, transparent 1px);
+    background-size: 44px 44px;
+}
+.slide-experience::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--accent); }
+.exp-inner { position: relative; z-index: 1; max-width: min(90vw, 900px); width: 100%; margin: 0 auto; }
+.exp-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: clamp(14px, 3vh, 28px); gap: 16px; flex-wrap: wrap; }
+.exp-company { font-size: clamp(1.4rem, 3.5vw, 2.6rem); font-weight: 800; color: var(--text-dark); letter-spacing: -0.02em; line-height: 1; }
+.exp-role { margin-top: 6px; font-size: clamp(0.6rem, 1.1vw, 0.8rem); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+.exp-dates { font-size: clamp(0.58rem, 0.95vw, 0.72rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #bbb; white-space: nowrap; padding-top: 4px; }
+.exp-bullets { list-style: none; display: flex; flex-direction: column; gap: clamp(9px, 1.8vh, 16px); }
+.exp-bullet { display: flex; align-items: flex-start; gap: clamp(10px, 1.5vw, 16px); }
+.bullet-tag {
+    flex-shrink: 0; font-size: clamp(0.5rem, 0.8vw, 0.62rem); font-weight: 800;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: #fff; background: var(--accent); padding: 3px 8px; border-radius: 2px;
+    margin-top: 2px; white-space: nowrap;
+}
+.bullet-text { font-size: clamp(0.7rem, 1.25vw, 0.92rem); font-weight: 400; color: #333; line-height: 1.5; }
+.bullet-text strong { font-weight: 700; color: var(--text-dark); }
+
+/* =============================================
+   SLIDE 4 — EARLIER ROLES  (dark 2-col)
+   ============================================= */
+.slide-roles { background: var(--bg-dark); padding: var(--slide-padding); justify-content: center; }
+.slide-roles::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background-image: radial-gradient(circle, #1a1a1a 1px, transparent 1px);
+    background-size: 22px 22px;
+}
+.roles-inner { position: relative; z-index: 1; max-width: min(90vw, 960px); width: 100%; margin: 0 auto; }
+.roles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 3vw, 36px); margin-top: clamp(14px, 3vh, 28px); }
+@media (max-width: 600px) { .roles-grid { grid-template-columns: 1fr; } }
+.role-card { border: 1px solid #1e1e1e; border-top: 3px solid var(--accent); padding: clamp(14px, 2.5%, 28px); background: #0f0f0f; }
+.role-company { font-size: clamp(1rem, 2.2vw, 1.6rem); font-weight: 800; color: var(--text-light); letter-spacing: -0.02em; line-height: 1.1; }
+.role-meta { margin-top: 5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.role-title { font-size: clamp(0.58rem, 0.95vw, 0.72rem); font-weight: 600; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; }
+.role-date { font-size: clamp(0.55rem, 0.85vw, 0.68rem); color: #444; font-weight: 500; }
+.role-divider { width: 100%; height: 1px; background: #1e1e1e; margin: clamp(10px, 1.8vh, 16px) 0; }
+.role-bullets { list-style: none; display: flex; flex-direction: column; gap: clamp(7px, 1.4vh, 13px); }
+.role-bullet { display: flex; align-items: flex-start; gap: 9px; font-size: clamp(0.67rem, 1.15vw, 0.86rem); color: #777; line-height: 1.45; }
+.role-bullet::before { content: '→'; color: var(--accent); font-size: clamp(0.62rem, 0.95vw, 0.75rem); flex-shrink: 0; margin-top: 1px; }
+.role-bullet strong { color: #bbb; font-weight: 600; }
+
+/* =============================================
+   SLIDE 5 — CAPABILITIES  (blue)
+   ============================================= */
+.slide-capabilities { background: var(--bg-blue); padding: var(--slide-padding); justify-content: center; }
+.cap-inner { position: relative; z-index: 1; max-width: min(90vw, 960px); width: 100%; margin: 0 auto; }
+.cap-heading { font-size: clamp(1.6rem, 4vw, 3.2rem); font-weight: 800; color: var(--text-light); letter-spacing: -0.02em; line-height: 1; margin-bottom: clamp(18px, 3.5vh, 36px); }
+.cap-heading em { font-style: normal; opacity: 0.5; }
+.cap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(10px, 1.8vw, 18px); }
+.cap-card { background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.08); padding: clamp(14px, 2.5%, 22px); transition: background 0.2s; }
+.cap-card:hover { background: rgba(0,0,0,0.5); }
+.cap-icon { font-size: clamp(1.1rem, 2.2vw, 1.6rem); margin-bottom: clamp(7px, 1.3vh, 12px); display: block; }
+.cap-title { font-size: clamp(0.78rem, 1.5vw, 1.05rem); font-weight: 800; color: var(--text-light); letter-spacing: -0.01em; margin-bottom: 5px; }
+.cap-desc { font-size: clamp(0.6rem, 0.98vw, 0.78rem); font-weight: 400; color: rgba(255,255,255,0.48); line-height: 1.5; }
+
+/* =============================================
+   SLIDE 6 — TECH STACK  (white + right blue bar)
+   ============================================= */
+.slide-skills { background: var(--bg-white); padding: var(--slide-padding); justify-content: center; }
+.slide-skills::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background-image: linear-gradient(#ebebeb 1px, transparent 1px), linear-gradient(90deg, #ebebeb 1px, transparent 1px);
+    background-size: 44px 44px;
+}
+.slide-skills::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 5px; background: var(--accent); }
+.skills-inner { position: relative; z-index: 1; max-width: min(90vw, 900px); width: 100%; margin: 0 auto; }
+.skills-heading { font-size: clamp(1.8rem, 4.5vw, 3.5rem); font-weight: 800; color: var(--text-dark); letter-spacing: -0.03em; line-height: 1; margin-bottom: clamp(18px, 3.5vh, 36px); }
+.skills-heading em { font-style: normal; color: var(--accent); }
+.skills-cols { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 4vw, 52px); }
+@media (max-width: 600px) { .skills-cols { grid-template-columns: 1fr; } }
+.skills-col-label { font-size: clamp(0.58rem, 0.95vw, 0.72rem); font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: clamp(10px, 2vh, 18px); }
+.skill-row { display: flex; align-items: baseline; gap: 10px; padding: clamp(7px, 1.3vh, 12px) 0; border-bottom: 1px solid #f0f0f0; }
+.skill-row:last-child { border-bottom: none; }
+.skill-name { font-size: clamp(0.72rem, 1.3vw, 0.95rem); font-weight: 700; color: var(--text-dark); flex-shrink: 0; }
+.skill-detail { font-size: clamp(0.58rem, 0.92vw, 0.72rem); color: var(--text-muted-dark); font-weight: 400; }
+.tool-pills { display: flex; flex-wrap: wrap; gap: 7px; }
+.tool-pill { font-size: clamp(0.56rem, 0.88vw, 0.68rem); font-weight: 600; color: var(--text-dark); background: #f4f4f4; border: 1px solid #e2e2e2; padding: 5px 11px; border-radius: 2px; letter-spacing: 0.04em; }
+
+/* =============================================
+   SLIDE 7 — EDUCATION  (dark)
+   ============================================= */
+.slide-education { background: var(--bg-dark); padding: var(--slide-padding); justify-content: center; }
+.slide-education::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 50px 50px;
+}
+.edu-inner { position: relative; z-index: 1; max-width: min(90vw, 900px); width: 100%; margin: 0 auto; }
+.edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 3vw, 36px); margin-top: clamp(14px, 3vh, 28px); }
+@media (max-width: 600px) { .edu-grid { grid-template-columns: 1fr; } }
+.edu-card { border: 1px solid #1e1e1e; border-bottom: 3px solid var(--accent); padding: clamp(18px, 3.5%, 34px); position: relative; overflow: hidden; }
+.edu-gpa {
+    font-size: clamp(3rem, 7vw, 6rem); font-weight: 800; color: #111;
+    line-height: 1; letter-spacing: -0.03em; margin-bottom: clamp(8px, 1.5vh, 14px);
+}
+.edu-school { font-size: clamp(1rem, 2.2vw, 1.55rem); font-weight: 800; color: var(--text-light); letter-spacing: -0.02em; line-height: 1.15; }
+.edu-degree { margin-top: 6px; font-size: clamp(0.58rem, 1vw, 0.75rem); color: var(--accent); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+.edu-meta { margin-top: clamp(10px, 2vh, 16px); display: flex; flex-direction: column; gap: 4px; }
+.edu-meta-item { font-size: clamp(0.6rem, 1vw, 0.76rem); color: #555; font-weight: 500; }
+.edu-meta-item strong { color: #777; font-weight: 600; }
+
+/* =============================================
+   SLIDE 8 — CLOSING  (white, centered)
+   ============================================= */
+.slide-closing { background: var(--bg-white); padding: var(--slide-padding); justify-content: center; align-items: center; }
+.slide-closing::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background-image: linear-gradient(#ebebeb 1px, transparent 1px), linear-gradient(90deg, #ebebeb 1px, transparent 1px);
+    background-size: 44px 44px;
+}
+.closing-inner { position: relative; z-index: 1; text-align: center; max-width: min(90vw, 780px); }
+.closing-heading { font-size: clamp(2.5rem, 7.5vw, 7rem); font-weight: 800; color: var(--text-dark); letter-spacing: -0.03em; line-height: 0.92; margin-bottom: clamp(16px, 3vh, 30px); }
+.closing-heading em { font-style: normal; color: var(--accent); }
+.closing-sub { font-size: clamp(0.72rem, 1.4vw, 1rem); font-weight: 400; color: var(--text-muted-dark); letter-spacing: 0.02em; margin-bottom: clamp(20px, 4vh, 38px); line-height: 1.6; }
+.closing-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: #fff;
+    font-family: var(--font); font-size: clamp(0.68rem, 1.15vw, 0.85rem);
+    font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: clamp(10px, 1.8vh, 16px) clamp(22px, 3.5vw, 40px);
+    border: none; cursor: pointer; transition: opacity 0.2s; text-decoration: none;
+}
+.closing-cta:hover { opacity: 0.85; }
+.closing-location { margin-top: clamp(14px, 2.5vh, 24px); font-size: clamp(0.58rem, 0.9vw, 0.72rem); font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: #ccc; }
+
+/* === INLINE EDITING === */
+.edit-hotzone { position: fixed; top: 0; left: 0; width: 80px; height: 80px; z-index: 10000; cursor: pointer; }
+#editToggle {
+    position: fixed; top: 18px; left: 18px;
+    background: var(--accent); color: #fff; border: none;
+    padding: 7px 14px; border-radius: 3px; font-family: var(--font);
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; z-index: 10001; opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+#editToggle.show, #editToggle.active { opacity: 1; pointer-events: auto; }
+#editToggle.active { background: #c53030; }
+[contenteditable="true"] { outline: 2px dashed rgba(43,68,255,0.4); outline-offset: 3px; border-radius: 2px; cursor: text; }
+.save-notice {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: #111; color: #fff; font-family: var(--font);
+    font-size: 12px; padding: 8px 16px; border-radius: 3px;
+    opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 10002; white-space: nowrap;
+}
+.save-notice.show { opacity: 1; }
+.kb-hint { position: fixed; bottom: 18px; right: 22px; font-family: var(--font); font-size: 11px; color: rgba(150,150,150,0.35); letter-spacing: 0.06em; z-index: 800; pointer-events: none; }
+
+/* === SLIDE 1 — PHOTO BACKGROUND + WARM THEME === */
+:root { --warm-gold: #c4a87a; }
+
+@keyframes kenBurns {
+    0%   { transform: scale(0.9) translate(0, 0); }
+    100% { transform: scale(1.0) translate(-1.5%, -1%); }
+}
+
+.title-bg-wrap { position: absolute; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; }
+.title-bg-img {
+    position: absolute;
+    inset: -5%;
+    background: url('img_5823.jpg') center 72% / cover no-repeat;
+    animation: kenBurns 16s ease-in-out infinite alternate;
+    will-change: transform;
+}
+.title-bg-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(8,5,2,0.04) 0%,
+        rgba(8,5,2,0.08) 55%,
+        rgba(8,5,2,0.55) 82%,
+        rgba(8,5,2,0.68) 100%
+    );
+}
+
+/* Override top panel — full height photo, row layout */
+.slide-title .top-panel {
+    flex: 0 0 100%;
+    background: #0a0703;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: clamp(12px, 2vw, 24px);
+}
+.slide-title .top-panel::before { display: none; }
+.slide-title .top-panel::after { background: var(--warm-gold); }
+.slide-title .top-panel > *:not(.title-bg-wrap):not(.title-hobbies) { position: relative; z-index: 1; }
+
+/* Left column: job identity */
+.title-main { display: flex; flex-direction: column; justify-content: flex-end; }
+
+/* Journey line below the name */
+.title-journey {
+    margin-top: clamp(8px, 1.4vh, 14px);
+    font-size: clamp(0.58rem, 0.95vw, 0.72rem); font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+}
+
+/* Hobbies — absolute upper right corner */
+.title-hobbies {
+    position: absolute; top: clamp(16px, 3%, 28px); right: clamp(20px, 3.5%, 36px);
+    z-index: 2;
+    display: flex; flex-direction: column; align-items: flex-end;
+    gap: clamp(3px, 0.55vh, 6px);
+    font-size: clamp(0.6rem, 0.95vw, 0.75rem); font-weight: 500;
+    color: rgba(255,255,255,0.35); letter-spacing: 0.06em;
+    text-align: right;
+}
+.title-hobbies span { white-space: nowrap; }
+
+/* Warm text colors on photo bg */
+.title-kicker { color: var(--warm-gold); }
+.title-name { color: #f5f0ea; }
+.title-name em { color: var(--warm-gold); }
+
+/* Bottom panel — transparent overlay floating on photo */
+.slide-title .bottom-panel {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: transparent; z-index: 2;
+}
+.slide-title .bottom-panel::before { display: none; }
+.slide-title .title-location { color: rgba(255,255,255,0.85); }
+.slide-title .title-tagline { color: rgba(255,255,255,0.42); }
+.slide-title .pill { border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.35); }
+.slide-title .pill.active { border-color: var(--warm-gold); color: var(--warm-gold); }
+
+</style>
 </head>
 <body>
 
-    <div class="hero">
-        <h1>🚀 Welcome to My LeetCode Journey</h1>
-        <p>Tracking my daily coding challenges, thoughts, and solutions.</p>
-    </div>
+<div class="progress-bar" id="progressBar"></div>
+<nav class="nav-dots" id="navDots" aria-label="Slide navigation"></nav>
 
-    <div class="container">
-        <h2>📅 Challenge Archive</h2>
-        <ul class="challenge-list">
-            <li><a href="day1.html">Day 1: Two-Pointer & Binary Search</a></li>
-            <li><a href="day2.html">Day 2: Sliding Windows</a></li>
-            <li><a href="day3.html">Day 3: Linked Lists</a></li>
-            <li><a href="day4.html">Day 4: Linked List Advanced</a></li>
-            <li><a href="day5.html">Day 5: Hashmap</a></li>
-            <li><a href="day6.html">Day 6: Hashmap Advanced</a></li>
-            <li><a href="day7.html">Day 7: Strings</a></li>
-            <li><a href="day8.html">Day 8: Strings Advanced</a></li>
-            <li><a href="day9.html">Day 9: Stack and Que</a></li>
-            <li><a href="day10.html">Day 10: Stack and Que Advanced</a></li>
-            <li><a href="day12.html">Day 12:  Binary Tree II</a></li>
-            <li><a href="day13.html">Day 13:  Binary Tree III</a></li>
-            <li><a href="day14.html">Day 14:  Binary Tree IV</a></li>
-            <li><a href="day15.html">Day 15:  Binary Tree V</a></li>
+<!-- Inline edit controls -->
+<div class="edit-hotzone" id="editHotzone"></div>
+<button id="editToggle" aria-label="Toggle edit mode">✏ Edit</button>
+<div class="save-notice" id="saveNotice">Saved ✓</div>
+<div class="kb-hint keyboard-hint">↑↓ Navigate · E Edit · ⌘S Save</div>
+
+<!-- =============================================
+     SLIDE 1 — TITLE
+     ============================================= -->
+<section class="slide slide-title" id="slide-1" aria-label="Title">
+  <div class="top-panel">
+    <div class="title-bg-wrap">
+      <div class="title-bg-img"></div>
+      <div class="title-bg-overlay"></div>
+    </div>
+    <div class="title-main">
+      <div class="title-kicker reveal d1" data-editable>Product Data Scientist</div>
+      <h1 class="title-name reveal d2" data-editable>Flora<br>Gong<em>.</em></h1>
+      <div class="title-journey reveal d3">Shanghai → New York</div>
+    </div>
+    <div class="title-hobbies reveal d2">
+
+      <span>Also know as a:</span>
+      <span>💃 Ballroom Dancer</span>
+      <span>🏃 Marathon Runner</span>
+      <span>🥊 Boxer</span>
+      
+      <span>🚴 Biker</span>
+      <span>🎭 Model</span>
+      <span>🐱 Cat Mom</span>
+    </div>
+  </div>
+  <div class="bottom-panel">
+    <div class="title-bottom-left reveal-left d3">
+      <div class="title-location" data-editable>New York · AI SaaS · FinTech</div>
+      <div class="title-tagline" data-editable>End-to-end ML · Experimentation · Decision Intelligence</div>
+    </div>
+    <div class="pills reveal-right d4">
+      <span class="pill active">Python</span>
+      <span class="pill">SQL</span>
+      <span class="pill active">ML</span>
+      <span class="pill">A/B Testing</span>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     SLIDE 2 — AT A GLANCE
+     ============================================= -->
+<section class="slide slide-stats" id="slide-2" aria-label="Key metrics">
+  <div class="stats-inner">
+    <div class="section-kicker reveal d1">At a Glance</div>
+    <div class="stats-row">
+      <div class="stat-item reveal d2">
+        <div class="stat-num"><span class="accent" data-count="30">30</span>%</div>
+        <div class="stat-desc">Improvement in client retention via analytical modeling &amp; automated triggers</div>
+      </div>
+      <div class="stats-vdivider"></div>
+      <div class="stat-item reveal d3">
+        <div class="stat-num"><span class="accent" data-count="92">92</span>%</div>
+        <div class="stat-desc">ML model accuracy for alternative asset valuation &amp; market forecasting</div>
+      </div>
+      <div class="stats-vdivider"></div>
+      <div class="stat-item reveal d4">
+        <div class="stat-num"><span class="accent" data-count="18">18</span>%</div>
+        <div class="stat-desc">Faster settlement velocity via multivariate A/B testing on LLM-generated content</div>
+      </div>
+    </div>
+    <div class="stats-footer reveal d5">
+      Building <strong>data-driven systems from 0 to 1</strong> across ML pipelines, experimentation, and decision intelligence.
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     SLIDE 3 — MONETARIA
+     ============================================= -->
+<section class="slide slide-experience" id="slide-3" aria-label="Monetaria LLC">
+  <div class="exp-inner">
+    <div class="exp-header reveal d1">
+      <div>
+        <div class="exp-company" data-editable>Monetaria LLC</div>
+        <div class="exp-role">Product Data Scientist — Client Portal for Private Credit Solutions</div>
+      </div>
+      <div class="exp-dates">May 2025 – Present &nbsp;·&nbsp; New York</div>
+    </div>
+    <ul class="exp-bullets">
+      <li class="exp-bullet reveal d2">
+        <span class="bullet-tag">Growth</span>
+        <span class="bullet-text" data-editable><strong>+30% client retention</strong> and <strong>+10% revenue</strong> via deep-dive analyses on retention and default rates; automated communication triggers targeting identified friction points.</span>
+      </li>
+      <li class="exp-bullet reveal d3">
+        <span class="bullet-tag">AI</span>
+        <span class="bullet-text" data-editable>Engineered a <strong>Collectability Score</strong> using OCR and bank-check data; automated missing-doc detection and streamlined the case-onboarding funnel through an AI-driven Case Review tool.</span>
+      </li>
+      <li class="exp-bullet reveal d4">
+        <span class="bullet-tag">HITL</span>
+        <span class="bullet-text" data-editable>Built a <strong>Human-in-the-Loop validation framework</strong> — analyzed ML performance vs. human-verified ground truth to achieve <strong>100% scoring accuracy</strong> on high-variance contract terms.</span>
+      </li>
+      <li class="exp-bullet reveal d5">
+        <span class="bullet-tag">A/B</span>
+        <span class="bullet-text" data-editable>Led multivariate A/B tests across vendors and LLM-generated content; optimized outreach frequency and tone by statistical significance, driving <strong>+18% settlement velocity</strong>.</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- =============================================
+     SLIDE 4 — EARLIER ROLES
+     ============================================= -->
+<section class="slide slide-roles" id="slide-4" aria-label="Earlier experience">
+  <div class="roles-inner">
+    <div class="section-kicker reveal d1">Prior Experience</div>
+    <div class="roles-grid">
+      <div class="role-card reveal-left d2">
+        <div class="role-company" data-editable>Antelope Enterprises Holdings</div>
+        <div class="role-meta">
+          <span class="role-title">Financial Data Analyst</span>
+          <span class="role-date">Mar 2024 – Apr 2025</span>
+        </div>
+        <div class="role-divider"></div>
+        <ul class="role-bullets">
+          <li class="role-bullet" data-editable>Designed <strong>revenue forecasting and risk-scoring models</strong> for infrastructure deals — improving executive decision velocity by <strong>40%</strong>.</li>
+          <li class="role-bullet" data-editable>Owned rollout of <strong>Tableau dashboards</strong>, automating performance reporting and forensic data flows across the team.</li>
         </ul>
+      </div>
+      <div class="role-card reveal-right d3">
+        <div class="role-company" data-editable>Masterworks</div>
+        <div class="role-meta">
+          <span class="role-title">Data Scientist — Research</span>
+          <span class="role-date">May 2022 – Dec 2023</span>
+        </div>
+        <div class="role-divider"></div>
+        <ul class="role-bullets">
+          <li class="role-bullet" data-editable>Built <strong>CNN/LLM valuation models</strong> with <strong>92% accuracy</strong> to forecast alternative asset appreciation and market volatility.</li>
+          <li class="role-bullet" data-editable>Engineered <strong>ETL pipelines</strong> via SQL and Airflow; conducted rigorous statistical hypothesis testing to validate experimental results.</li>
+        </ul>
+      </div>
     </div>
+  </div>
+</section>
 
-    <footer>
-        <p>📢 Follow my journey on Bilibili: <a href="https://space.bilibili.com/865132" target="_blank">👉 My Bilibili </a></p>
-    </footer>
+<!-- =============================================
+     SLIDE 5 — CAPABILITIES
+     ============================================= -->
+<section class="slide slide-capabilities" id="slide-5" aria-label="Core capabilities">
+  <div class="cap-inner">
+    <div class="section-kicker reveal d1" style="color:rgba(255,255,255,0.45);">Core Capabilities</div>
+    <h2 class="cap-heading reveal d2">What I Do<em>.</em></h2>
+    <div class="cap-grid">
+      <div class="cap-card reveal d3">
+        <span class="cap-icon">⚗️</span>
+        <div class="cap-title">Machine Learning</div>
+        <div class="cap-desc">Predictive modeling, NLP, computer vision, HITL systems, and production-grade valuation models.</div>
+      </div>
+      <div class="cap-card reveal d4">
+        <span class="cap-icon">📊</span>
+        <div class="cap-title">Experimentation</div>
+        <div class="cap-desc">End-to-end A/B and multivariate testing — metric definition, power analysis, significance, and impact readout.</div>
+      </div>
+      <div class="cap-card reveal d5">
+        <span class="cap-icon">🎯</span>
+        <div class="cap-title">Product Analytics</div>
+        <div class="cap-desc">Metric frameworks, funnel optimization, retention modeling, KPI design, and cross-functional decision intelligence.</div>
+      </div>
+      <div class="cap-card reveal d6">
+        <span class="cap-icon">🔧</span>
+        <div class="cap-title">Data Engineering</div>
+        <div class="cap-desc">ETL pipeline architecture with SQL and Airflow, OCR data pipelines, automated scoring systems built 0→1.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
+<!-- =============================================
+     SLIDE 6 — TECH STACK
+     ============================================= -->
+<section class="slide slide-skills" id="slide-6" aria-label="Technical skills">
+  <div class="skills-inner">
+    <h2 class="skills-heading reveal d1">Tech<br>Stack<em>.</em></h2>
+    <div class="skills-cols">
+      <div class="reveal-left d2">
+        <div class="skills-col-label">Core Skills</div>
+        <div class="skill-row">
+          <span class="skill-name">Python</span>
+          <span class="skill-detail">pandas · sklearn · TensorFlow · OCR</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-name">SQL</span>
+          <span class="skill-detail">complex queries · optimization · ETL</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-name">Tableau</span>
+          <span class="skill-detail">dashboards · forensic flows · reporting</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-name">REST APIs</span>
+          <span class="skill-detail">integration · automation · data pipelines</span>
+        </div>
+      </div>
+      <div class="reveal-right d3">
+        <div class="skills-col-label">Tools &amp; Platforms</div>
+        <div style="margin-bottom: clamp(12px,2.2vh,20px);">
+          <div class="tool-pills">
+            <span class="tool-pill">VS Code</span>
+            <span class="tool-pill">Git / GitHub</span>
+            <span class="tool-pill">Docker</span>
+            <span class="tool-pill">Kubernetes</span>
+            <span class="tool-pill">Jira</span>
+            <span class="tool-pill">Salesforce</span>
+            <span class="tool-pill">n8n</span>
+            <span class="tool-pill">Intercom</span>
+            <span class="tool-pill">Airflow</span>
+          </div>
+        </div>
+        <div class="skills-col-label">Domains</div>
+        <div class="tool-pills">
+          <span class="tool-pill">AI SaaS</span>
+          <span class="tool-pill">FinTech</span>
+          <span class="tool-pill">Private Credit</span>
+          <span class="tool-pill">Alt Assets</span>
+          <span class="tool-pill">Product Analytics</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     SLIDE 7 — EDUCATION
+     ============================================= -->
+<section class="slide slide-education" id="slide-7" aria-label="Education">
+  <div class="edu-inner">
+    <div class="section-kicker reveal d1">Education</div>
+    <div class="edu-grid">
+      <div class="edu-card reveal-left d2">
+        <div class="edu-gpa">3.91</div>
+        <div class="edu-school" data-editable>New York University<br>Tandon School of Engineering</div>
+        <div class="edu-degree">M.S. Data Science</div>
+        <div class="edu-meta">
+          <div class="edu-meta-item">📍 <strong>New York</strong></div>
+          <div class="edu-meta-item">📅 <strong>Sep 2021 – Sep 2022</strong></div>
+        </div>
+      </div>
+      <div class="edu-card reveal-right d3">
+        <div class="edu-gpa">3.75</div>
+        <div class="edu-school" data-editable>Fudan University</div>
+        <div class="edu-degree">B.S. Data Science</div>
+        <div class="edu-meta">
+          <div class="edu-meta-item">📍 <strong>Shanghai · Ranked Top 3 in China</strong></div>
+          <div class="edu-meta-item">📅 <strong>Sep 2017 – Sep 2021</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     SLIDE 8 — CLOSING
+     ============================================= -->
+<section class="slide slide-closing" id="slide-8" aria-label="Contact">
+  <div class="closing-inner">
+    <div class="section-kicker reveal d1" style="color:var(--accent);">Available for Opportunities</div>
+    <h2 class="closing-heading reveal d2">Let's Build<br>Something<em>.</em></h2>
+    <p class="closing-sub reveal d3" data-editable>Open to Product Data Scientist, Data Scientist, and Analytics Engineering roles in New York.</p>
+    <a class="closing-cta reveal d4" href="mailto:your@email.com" data-editable>Get in Touch →</a>
+    <div class="closing-location reveal d5">New York City &nbsp;·&nbsp; LinkedIn &nbsp;·&nbsp; GitHub</div>
+  </div>
+</section>
+
+<script>
+/* =============================================
+   SLIDE PRESENTATION CONTROLLER
+   ============================================= */
+class SlidePresentation {
+    constructor() {
+        this.slides = Array.from(document.querySelectorAll('.slide'));
+        this.currentIndex = 0;
+        this.init();
+    }
+
+    init() {
+        this.progressBar = document.getElementById('progressBar');
+        this.buildNavDots();
+        this.setupObserver();
+        this.setupKeyboard();
+        this.setupWheel();
+        this.setupTouch();
+        // Mark first slide visible immediately
+        this.slides[0].classList.add('visible');
+        this.updateUI(0);
+    }
+
+    buildNavDots() {
+        const nav = document.getElementById('navDots');
+        this.dots = this.slides.map((_, i) => {
+            const dot = document.createElement('li');
+            dot.className = 'nav-dot';
+            dot.setAttribute('aria-label', `Slide ${i + 1}`);
+            dot.addEventListener('click', () => this.goTo(i));
+            nav.appendChild(dot);
+            return dot;
+        });
+    }
+
+    updateUI(index) {
+        this.currentIndex = index;
+        const pct = this.slides.length > 1 ? (index / (this.slides.length - 1)) * 100 : 0;
+        this.progressBar.style.width = pct + '%';
+        this.dots.forEach((d, i) => d.classList.toggle('active', i === index));
+    }
+
+    setupObserver() {
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (!e.isIntersecting) return;
+                const idx = this.slides.indexOf(e.target);
+                e.target.classList.add('visible');
+                this.updateUI(idx);
+                // Counter animation on stats slide
+                if (idx === 1) this.animateCounters(e.target);
+            });
+        }, { threshold: 0.5 });
+        this.slides.forEach(s => obs.observe(s));
+    }
+
+    animateCounters(slide) {
+        slide.querySelectorAll('[data-count]').forEach(el => {
+            const target = parseInt(el.dataset.count, 10);
+            const duration = 1100;
+            const start = Date.now();
+            const tick = () => {
+                const p = Math.min((Date.now() - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - p, 3);
+                el.textContent = Math.round(target * eased);
+                if (p < 1) requestAnimationFrame(tick);
+            };
+            requestAnimationFrame(tick);
+        });
+    }
+
+    goTo(index) {
+        if (index < 0 || index >= this.slides.length) return;
+        this.slides[index].scrollIntoView({ behavior: 'smooth' });
+    }
+
+    next() { this.goTo(this.currentIndex + 1); }
+    prev() { this.goTo(this.currentIndex - 1); }
+
+    setupKeyboard() {
+        document.addEventListener('keydown', e => {
+            if (e.target.getAttribute('contenteditable') === 'true') return;
+            if (['ArrowDown', 'ArrowRight', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); this.next(); }
+            else if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); this.prev(); }
+        });
+    }
+
+    setupWheel() {
+        let last = 0;
+        document.addEventListener('wheel', e => {
+            const now = Date.now();
+            if (now - last < 750) return;
+            last = now;
+            if (e.deltaY > 30) this.next();
+            else if (e.deltaY < -30) this.prev();
+        }, { passive: true });
+    }
+
+    setupTouch() {
+        let startY = 0;
+        document.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, { passive: true });
+        document.addEventListener('touchend', e => {
+            const dy = startY - e.changedTouches[0].clientY;
+            if (Math.abs(dy) > 50) { dy > 0 ? this.next() : this.prev(); }
+        }, { passive: true });
+    }
+}
+
+/* =============================================
+   INLINE EDITOR
+   ============================================= */
+class InlineEditor {
+    constructor() {
+        this.isActive = false;
+        this.hotzone = document.getElementById('editHotzone');
+        this.toggle = document.getElementById('editToggle');
+        this.notice = document.getElementById('saveNotice');
+        this.editables = Array.from(document.querySelectorAll('[data-editable]'));
+        this.hideTimer = null;
+        this.saveTimer = null;
+        this._noticeTimer = null;
+
+        this.setupHotzone();
+        this.toggle.addEventListener('click', () => this.toggleMode());
+        document.addEventListener('keydown', e => {
+            if ((e.key === 'e' || e.key === 'E') && e.target.getAttribute('contenteditable') !== 'true') this.toggleMode();
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); this.save(); }
+        });
+        document.addEventListener('input', e => {
+            if (e.target.getAttribute('contenteditable') === 'true') {
+                clearTimeout(this.saveTimer);
+                this.saveTimer = setTimeout(() => this.save(), 1500);
+            }
+        });
+        this.load();
+    }
+
+    setupHotzone() {
+        const show = () => { clearTimeout(this.hideTimer); this.toggle.classList.add('show'); };
+        const hide = () => { this.hideTimer = setTimeout(() => { if (!this.isActive) this.toggle.classList.remove('show'); }, 400); };
+        this.hotzone.addEventListener('mouseenter', show);
+        this.hotzone.addEventListener('mouseleave', hide);
+        this.hotzone.addEventListener('click', () => this.toggleMode());
+        this.toggle.addEventListener('mouseenter', show);
+        this.toggle.addEventListener('mouseleave', hide);
+    }
+
+    toggleMode() {
+        this.isActive = !this.isActive;
+        this.editables.forEach(el => el.setAttribute('contenteditable', this.isActive ? 'true' : 'false'));
+        this.toggle.classList.toggle('active', this.isActive);
+        this.toggle.classList.add('show');
+        this.toggle.textContent = this.isActive ? '✓ Done' : '✏ Edit';
+        if (!this.isActive) this.save();
+        else this.showNotice('Edit mode on — click any text to edit');
+    }
+
+    save() {
+        const data = {};
+        this.editables.forEach((el, i) => { data[i] = el.innerHTML; });
+        try { localStorage.setItem('flora-portfolio', JSON.stringify(data)); } catch(e) {}
+        this.showNotice('Saved to browser ✓');
+    }
+
+    load() {
+        try {
+            const raw = localStorage.getItem('flora-portfolio');
+            if (!raw) return;
+            const data = JSON.parse(raw);
+            this.editables.forEach((el, i) => { if (data[i] !== undefined) el.innerHTML = data[i]; });
+        } catch(e) {}
+    }
+
+    showNotice(msg) {
+        this.notice.textContent = msg;
+        this.notice.classList.add('show');
+        clearTimeout(this._noticeTimer);
+        this._noticeTimer = setTimeout(() => this.notice.classList.remove('show'), 2500);
+    }
+}
+
+const presentation = new SlidePresentation();
+const editor = new InlineEditor();
+</script>
 </body>
 </html>

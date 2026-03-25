@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Template Gallery</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f0f13;
+      color: #e8e8f0;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: #1a1a24;
+      border-bottom: 1px solid #2a2a38;
+      padding: 18px 28px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    header h1 span {
+      background: linear-gradient(135deg, #7c6aff, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .count-badge {
+      background: #2a2a3a;
+      color: #a0a0c0;
+      font-size: 0.78rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    /* ── Search & Filters ── */
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex: 1;
+      min-width: 200px;
+      flex-wrap: wrap;
+    }
+
+    #search {
+      flex: 1;
+      min-width: 160px;
+      background: #0f0f18;
+      border: 1px solid #2a2a40;
+      color: #e8e8f0;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    #search:focus { border-color: #7c6aff; }
+    #search::placeholder { color: #555570; }
+
+    #category {
+      background: #0f0f18;
+      border: 1px solid #2a2a40;
+      color: #e8e8f0;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .compare-btn {
+      background: linear-gradient(135deg, #7c6aff, #a78bfa);
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: opacity 0.2s;
+    }
+
+    .compare-btn:hover { opacity: 0.85; }
+    .compare-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Grid ── */
+    .grid-wrap {
+      padding: 24px 28px;
+    }
+
+    .result-info {
+      font-size: 0.82rem;
+      color: #6060a0;
+      margin-bottom: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: #1a1a24;
+      border: 1px solid #2a2a38;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: #4a4a70;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+
+    .card.selected {
+      border-color: #7c6aff;
+      box-shadow: 0 0 0 2px #7c6aff44;
+    }
+
+    /* Preview iframe */
+    .preview-wrap {
+      position: relative;
+      height: 180px;
+      overflow: hidden;
+      background: #111120;
+      cursor: pointer;
+    }
+
+    .preview-wrap iframe {
+      width: 200%;
+      height: 200%;
+      transform: scale(0.5);
+      transform-origin: top left;
+      pointer-events: none;
+      border: none;
+    }
+
+    .preview-overlay {
+      position: absolute;
+      inset: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .preview-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #3a3a58;
+      font-size: 2.5rem;
+    }
+
+    /* Card footer */
+    .card-footer {
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-name {
+      flex: 1;
+      font-size: 0.82rem;
+      color: #c8c8e8;
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .cat-tag {
+      font-size: 0.68rem;
+      padding: 2px 7px;
+      border-radius: 10px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .open-btn {
+      background: #2a2a3a;
+      color: #a0a0d0;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background 0.15s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .open-btn:hover { background: #3a3a5a; color: #fff; }
+
+    .select-check {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #3a3a58;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: border-color 0.15s, background 0.15s;
+      font-size: 11px;
+    }
+
+    .card.selected .select-check {
+      background: #7c6aff;
+      border-color: #7c6aff;
+      color: #fff;
+    }
+
+    /* ── Compare Modal ── */
+    #compare-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #0a0a10;
+      z-index: 1000;
+      flex-direction: column;
+    }
+
+    #compare-modal.open { display: flex; }
+
+    .modal-header {
+      background: #1a1a24;
+      border-bottom: 1px solid #2a2a38;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .modal-header h2 { font-size: 1rem; color: #fff; }
+
+    .close-btn {
+      margin-left: auto;
+      background: #2a2a3a;
+      border: none;
+      color: #a0a0c0;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .close-btn:hover { background: #3a3a5a; color: #fff; }
+
+    .compare-frames {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      gap: 2px;
+      background: #0a0a14;
+    }
+
+    .frame-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .frame-label {
+      background: #15151f;
+      color: #8888b0;
+      padding: 8px 16px;
+      font-size: 0.8rem;
+      border-bottom: 1px solid #2a2a38;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .frame-panel iframe {
+      flex: 1;
+      border: none;
+      width: 100%;
+    }
+
+    /* Category colours */
+    .cat-business    { background: #1a3a5a; color: #60b0ff; }
+    .cat-portfolio   { background: #1a3a2a; color: #60d090; }
+    .cat-coming-soon { background: #3a2a1a; color: #ffaa60; }
+    .cat-restaurant  { background: #3a1a1a; color: #ff8080; }
+    .cat-real-estate { background: #2a3a1a; color: #a0d060; }
+    .cat-health      { background: #1a3a3a; color: #60d0d0; }
+    .cat-education   { background: #2a1a3a; color: #c080ff; }
+    .cat-photo       { background: #1a2a3a; color: #60c0e0; }
+    .cat-beauty      { background: #3a1a2a; color: #ff80c0; }
+    .cat-interior    { background: #2a3a2a; color: #80c080; }
+    .cat-app         { background: #1a1a3a; color: #8080ff; }
+    .cat-hosting     { background: #3a3a1a; color: #d0d060; }
+    .cat-admin       { background: #2a2a3a; color: #a0a0d0; }
+    .cat-wedding     { background: #3a1a3a; color: #ff80ff; }
+    .cat-auto        { background: #3a2a1a; color: #ffb060; }
+    .cat-music       { background: #1a3a3a; color: #60e0c0; }
+    .cat-hotel       { background: #2a1a1a; color: #e08060; }
+    .cat-other       { background: #2a2a2a; color: #909090; }
+
+    /* No results */
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: #4a4a6a;
+    }
+
+    .no-results p { font-size: 1.2rem; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Template <span>Gallery</span></h1>
+  <span class="count-badge" id="total-count">171 templates</span>
+  <div class="controls">
+    <input type="text" id="search" placeholder="Search templates..." autocomplete="off">
+    <select id="category">
+      <option value="">All categories</option>
+      <option value="business">Business / Corporate</option>
+      <option value="portfolio">Portfolio / Resume</option>
+      <option value="coming-soon">Coming Soon</option>
+      <option value="restaurant">Restaurant / Food</option>
+      <option value="real-estate">Real Estate</option>
+      <option value="health">Health / Medical</option>
+      <option value="education">Education</option>
+      <option value="photo">Photography</option>
+      <option value="beauty">Beauty / Salon</option>
+      <option value="interior">Interior / Design</option>
+      <option value="app">App Landing</option>
+      <option value="hosting">Hosting / Tech</option>
+      <option value="admin">Admin / Dashboard</option>
+      <option value="wedding">Wedding</option>
+      <option value="auto">Automotive</option>
+      <option value="music">Music</option>
+      <option value="hotel">Hotel / Travel</option>
+      <option value="other">Other</option>
+    </select>
+    <button class="compare-btn" id="compare-btn" disabled>Compare (0/2)</button>
+  </div>
+</header>
+
+<div class="grid-wrap">
+  <div class="result-info" id="result-info"></div>
+  <div class="grid" id="grid"></div>
+  <div class="no-results" id="no-results" style="display:none">
+    <p>No templates found</p>
+    <small>Try a different search or category</small>
+  </div>
+</div>
+
+<!-- Compare Modal -->
+<div id="compare-modal">
+  <div class="modal-header">
+    <h2>Side-by-Side Comparison</h2>
+    <span id="compare-labels" style="font-size:0.82rem;color:#6060a0;"></span>
+    <button class="close-btn" onclick="closeCompare()">✕ Close</button>
+  </div>
+  <div class="compare-frames">
+    <div class="frame-panel">
+      <div class="frame-label" id="label-a">Template A</div>
+      <iframe id="frame-a" src="about:blank"></iframe>
+    </div>
+    <div class="frame-panel">
+      <div class="frame-label" id="label-b">Template B</div>
+      <iframe id="frame-b" src="about:blank"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+const templates = [
+  { folder: "3-col-portfolio",                                         cat: "portfolio" },
+  { folder: "above-educational-bootstrap-responsive-template",         cat: "education" },
+  { folder: "ace-responsive-coming-soon-template",                     cat: "coming-soon" },
+  { folder: "add-life-health-fitness-free-bootstrap-html5-template",   cat: "health" },
+  { folder: "aerosky-real-estate-html-responsive-website-template",    cat: "real-estate" },
+  { folder: "agile-agency-free-bootstrap-web-template",                cat: "business" },
+  { folder: "alive-responsive-coming-soon-template",                   cat: "coming-soon" },
+  { folder: "amaze-photography-bootstrap-html5-template",              cat: "photo" },
+  { folder: "aroma-beauty-and-spa-responsive-bootstrap-template",      cat: "beauty" },
+  { folder: "atlanta-free-business-bootstrap-template",                cat: "business" },
+  { folder: "avenger-multi-purpose-responsive-html5-bootstrap-template", cat: "business" },
+  { folder: "b-school-free-education-html5-website-template",          cat: "education" },
+  { folder: "basic-free-html5-template-for-multi-purpose",             cat: "other" },
+  { folder: "beauty-salon-bootstrap-html5-template",                   cat: "beauty" },
+  { folder: "bestro-restaurant-bootstrap-html5-template",              cat: "restaurant" },
+  { folder: "blazer-responsive-html5-coming-soon-template",            cat: "coming-soon" },
+  { folder: "brand-html5-app-landing-page-responsive-web-template",    cat: "app" },
+  { folder: "businessline-corporate-portfolio-bootstrap-responsive-web-template", cat: "business" },
+  { folder: "businessr-corporate-bootstrap-responsive-web-template",   cat: "business" },
+  { folder: "car-care-auto-mobile-html5-bootstrap-web-template",       cat: "auto" },
+  { folder: "car-repair-html5-bootstrap-template",                     cat: "auto" },
+  { folder: "car-zone-automobile-bootstrap-responsive-web-template",   cat: "auto" },
+  { folder: "city-square-bootstrap-responsive-web-template",           cat: "business" },
+  { folder: "cloud-hosting-free-bootstrap-responsive-website-template", cat: "hosting" },
+  { folder: "clouds-html5-multipurpose-landing-page-template",         cat: "other" },
+  { folder: "coffee-shop-free-html5-template",                         cat: "restaurant" },
+  { folder: "coming-soon-responsive-theme-jack",                       cat: "coming-soon" },
+  { folder: "creative-bee-corporate-free-html5-web-template",          cat: "business" },
+  { folder: "creative-free-responsive-html5-business-template",        cat: "business" },
+  { folder: "css3-bw",                                                 cat: "other" },
+  { folder: "css3-drop-shadows",                                       cat: "other" },
+  { folder: "css3-photo-two",                                          cat: "photo" },
+  { folder: "css3-seascape",                                           cat: "other" },
+  { folder: "css3-seascape-two",                                       cat: "other" },
+  { folder: "darktouch-corporate-portfolio-bootstrap-responsive-web-template", cat: "portfolio" },
+  { folder: "delight-multi-purpose-free-html5-website-template",       cat: "other" },
+  { folder: "delite-music-html5-bootstrap-responsive-web-template",    cat: "music" },
+  { folder: "dreamy",                                                   cat: "other" },
+  { folder: "drifting",                                                 cat: "other" },
+  { folder: "droll",                                                    cat: "other" },
+  { folder: "eat-restaurant-bootstrap-html5-template",                 cat: "restaurant" },
+  { folder: "elegant-free-multi-purpose-bootstrap-responsive-template", cat: "other" },
+  { folder: "endure-html5-responsive-coming-soon-template",            cat: "coming-soon" },
+  { folder: "enlive-corporate-free-html5-bootstrap-web-template",      cat: "business" },
+  { folder: "everest-corporate-business-bootstrap-template",           cat: "business" },
+  { folder: "extent",                                                   cat: "other" },
+  { folder: "fiber-hosting-bootstrap-website-template",                cat: "hosting" },
+  { folder: "fit-healthy-fitness-and-gym-html5-bootstrap-theme",       cat: "health" },
+  { folder: "fitness-zone-html5-bootstrap-responsive-web-template",    cat: "health" },
+  { folder: "foodz-mobile-app-bootstrap-landing-page",                 cat: "app" },
+  { folder: "frames-corporate-bootstrap-free-html5-template",          cat: "business" },
+  { folder: "free-bootstrap-admin-template-dream",                     cat: "admin" },
+  { folder: "free-bootstrap-template-for-multi-purpose-ladder",        cat: "other" },
+  { folder: "free-bootstrap-template-real-estate-my-home",             cat: "real-estate" },
+  { folder: "free-bootstrap-template-restaurant-website-treehut",      cat: "restaurant" },
+  { folder: "free-bootstrap-template-rockline-business",               cat: "business" },
+  { folder: "free-portfolio-html5-responsive-website-sam",             cat: "portfolio" },
+  { folder: "full-slider",                                              cat: "other" },
+  { folder: "funky-cool-blue",                                         cat: "other" },
+  { folder: "getdoctor-free-bootstrap-responsive-website-template",    cat: "health" },
+  { folder: "gila",                                                     cat: "other" },
+  { folder: "glips-responsive-free-coming-soon-bootstrap-template",    cat: "coming-soon" },
+  { folder: "golden-hotel-free-html5-bootstrap-web-template",          cat: "hotel" },
+  { folder: "grand-free-bootstrap-responsive-website-template",        cat: "business" },
+  { folder: "grandure-bootstrap-free-coming-soon-template",            cat: "coming-soon" },
+  { folder: "grass-stains",                                            cat: "other" },
+  { folder: "green-corp-flat-free-responsive-mobile-website",          cat: "business" },
+  { folder: "greenery",                                                 cat: "other" },
+  { folder: "gunmetal-portal",                                         cat: "admin" },
+  { folder: "half-slider",                                             cat: "other" },
+  { folder: "html5-portfolio",                                         cat: "portfolio" },
+  { folder: "html5-responsive-coming-soon-page",                       cat: "coming-soon" },
+  { folder: "hybrid-bootstrap-admin-template",                         cat: "admin" },
+  { folder: "iam-html5-responsive-portfolio-resume-template",          cat: "portfolio" },
+  { folder: "iclick-photography-bootstrap-free-website-template",      cat: "photo" },
+  { folder: "icon-real-estate-developers-free-responsive-html-template", cat: "real-estate" },
+  { folder: "idata-hosting-free-bootstrap-responsive-website-template", cat: "hosting" },
+  { folder: "ideal-interior-design-free-bootstrap-website-template",   cat: "interior" },
+  { folder: "indus-free-coming-soon-bootstrap-responsive-template",    cat: "coming-soon" },
+  { folder: "insight-free-bootstrap-html5-admin-template",             cat: "admin" },
+  { folder: "interio",                                                  cat: "interior" },
+  { folder: "internet-portal",                                         cat: "admin" },
+  { folder: "john-bootstrap-one-page-html5-free-resume-template",      cat: "portfolio" },
+  { folder: "johndoe-portfolio-resume-bootstrap-template",             cat: "portfolio" },
+  { folder: "kavin-corporate-bootstrap-responsive-web-template",       cat: "business" },
+  { folder: "lazydays",                                                 cat: "other" },
+  { folder: "learn-educational-free-responsive-web-template",          cat: "education" },
+  { folder: "light-coming-soon-html-responsive-template",              cat: "coming-soon" },
+  { folder: "line-free-app-landing-page-responsive-web-template",      cat: "app" },
+  { folder: "lovely-wedding-bootstrap-free-website-template",          cat: "wedding" },
+  { folder: "matrix-free-bootstrap-admin-template",                    cat: "admin" },
+  { folder: "me-resume-personal-portfolio-responsive-template",        cat: "portfolio" },
+  { folder: "medplus-medical",                                         cat: "health" },
+  { folder: "mentor-free-html5-bootstrap-coming-soon-template",        cat: "coming-soon" },
+  { folder: "metropolis",                                               cat: "other" },
+  { folder: "midway-free-html5-website-template-for-multi-purpose",    cat: "other" },
+  { folder: "missunderstood",                                           cat: "other" },
+  { folder: "mobile-app-free-one-page-responsive-html5-landing-page",  cat: "app" },
+  { folder: "mobile-app-landing-page-html5-template",                  cat: "app" },
+  { folder: "moon-free-bootstrap-coming-soon-template",                cat: "coming-soon" },
+  { folder: "moto-business-html5-responsive-web-template",             cat: "business" },
+  { folder: "my-portfolio-two",                                        cat: "portfolio" },
+  { folder: "next-responsive-coming-soon-bootstrap-template",          cat: "coming-soon" },
+  { folder: "ninja-business-consulting-html-responsive-web-template",  cat: "business" },
+  { folder: "one-page-wonder",                                         cat: "other" },
+  { folder: "orange-coming-soon-html-responsive-template",             cat: "coming-soon" },
+  { folder: "park-city-bootstrap-html-real-estate-responsive-template", cat: "real-estate" },
+  { folder: "photo-art",                                               cat: "photo" },
+  { folder: "photo-style-two",                                         cat: "photo" },
+  { folder: "plain",                                                    cat: "other" },
+  { folder: "portfolio-item",                                          cat: "portfolio" },
+  { folder: "prosimii",                                                 cat: "other" },
+  { folder: "real-estate-builders-free-responsive-website-templates-adesign", cat: "real-estate" },
+  { folder: "relax-interior-free-bootstrap-responsive-website-template", cat: "interior" },
+  { folder: "relic-portal",                                            cat: "admin" },
+  { folder: "retro-free-consulting-responsive-html5-website-template", cat: "business" },
+  { folder: "reveal",                                                   cat: "other" },
+  { folder: "rider-free-multi-purpose-bootstrap-template",             cat: "other" },
+  { folder: "rocket-business-bootstrap-free-responsive-web-theme",     cat: "business" },
+  { folder: "sample_site",                                             cat: "other" },
+  { folder: "sb-admin",                                                cat: "admin" },
+  { folder: "sb-admin-2",                                              cat: "admin" },
+  { folder: "scenic-photo",                                            cat: "photo" },
+  { folder: "school-educational-html5-template",                       cat: "education" },
+  { folder: "simple-sidebar",                                          cat: "admin" },
+  { folder: "simply-bootstrap-coming-soon-template",                   cat: "coming-soon" },
+  { folder: "sinorca",                                                  cat: "other" },
+  { folder: "skytouch-onepage-bootstrap-responsive-web-template",      cat: "business" },
+  { folder: "smart-interior-designs-html5-bootstrap-web-template",     cat: "interior" },
+  { folder: "smartapp-free-html5-landing-page",                        cat: "app" },
+  { folder: "speed-hosting-bootstrap-free-html5-template",             cat: "hosting" },
+  { folder: "startbootstrap-agency-1.0.2",                             cat: "business" },
+  { folder: "startbootstrap-clean-blog-1.0.2",                        cat: "other" },
+  { folder: "startbootstrap-freelancer-1.0.2",                        cat: "portfolio" },
+  { folder: "startbootstrap-grayscale-1.0.3",                         cat: "other" },
+  { folder: "startbootstrap-sb-admin-1.0.2",                          cat: "admin" },
+  { folder: "startbootstrap-sb-admin-2-1.0.5",                        cat: "admin" },
+  { folder: "startbootstrap-stylish-portfolio-1.0.2",                  cat: "portfolio" },
+  { folder: "street-life",                                             cat: "other" },
+  { folder: "styleinn-bootstrap-interior-design-website-template",     cat: "interior" },
+  { folder: "stylish-bootstrap-coming-soon-template",                  cat: "coming-soon" },
+  { folder: "stylish-portfolio",                                       cat: "portfolio" },
+  { folder: "super-simple-site",                                       cat: "other" },
+  { folder: "swifty-business-html5-website-template",                  cat: "business" },
+  { folder: "target-multipurpose-free-bootstrap-responsive-template",  cat: "other" },
+  { folder: "team-business-flat-bootstrap-html5-template",             cat: "business" },
+  { folder: "tech-city-free-coming-soon-bootstrap-responsive-template", cat: "coming-soon" },
+  { folder: "techking-free-html5-template-for-corporate-business",     cat: "business" },
+  { folder: "techro",                                                   cat: "hosting" },
+  { folder: "the-best-wedding-free-bootstrap-template",                cat: "wedding" },
+  { folder: "theme-changer-template",                                  cat: "other" },
+  { folder: "themer-bootstrap-responsive-web-template",                cat: "other" },
+  { folder: "thin-green-line",                                         cat: "other" },
+  { folder: "times-corporate-portfolio-bootstrap-responsive-web-template", cat: "business" },
+  { folder: "touch-hospital-medical-bootstrap-html5-template",         cat: "health" },
+  { folder: "traveller-bootstrap-responsive-web-template",             cat: "hotel" },
+  { folder: "trendset-coming-soon-responsive-theme",                   cat: "coming-soon" },
+  { folder: "trendy-free-bootstrap-responsive-website-template",       cat: "business" },
+  { folder: "unique-free-responsive-html5-template",                   cat: "other" },
+  { folder: "vcare-free-html5-template-hospital-website",              cat: "health" },
+  { folder: "vento-coming-soon-responsive-theme",                      cat: "coming-soon" },
+  { folder: "vibe-free-html5-template-for-corporate-website",         cat: "business" },
+  { folder: "vibrant-corporate-bootstrap-responsive-website-template", cat: "business" },
+  { folder: "victory-educational-institution-free-html5-bootstrap-template", cat: "education" },
+  { folder: "viver-free-html5-bootstrap-coming-soon-template",         cat: "coming-soon" },
+  { folder: "vone-free-business-html5-responsive-website",             cat: "business" },
+  { folder: "vteam-a-corporate-multipurpose-free-bootstrap-responsive-template", cat: "business" },
+  { folder: "webtrends-free-bootstrap-responsive-web-template",        cat: "business" },
+  { folder: "wedding-bells-free-responsive-html5-template",            cat: "wedding" },
+  { folder: "wow-portfolio-multi-purpose-html5-template",              cat: "portfolio" },
+  { folder: "zenlike",                                                  cat: "other" },
+];
+
+const catLabels = {
+  business: "Business", portfolio: "Portfolio", "coming-soon": "Coming Soon",
+  restaurant: "Restaurant", "real-estate": "Real Estate", health: "Health",
+  education: "Education", photo: "Photo", beauty: "Beauty", interior: "Interior",
+  app: "App", hosting: "Hosting", admin: "Admin", wedding: "Wedding",
+  auto: "Auto", music: "Music", hotel: "Hotel", other: "Other"
+};
+
+let selected = [];
+let previewLoaded = {};
+
+function niceName(folder) {
+  return folder
+    .replace(/-\d+\.\d+(\.\d+)?$/, '')
+    .replace(/[-_]/g, ' ')
+    .replace(/\b(free|html5|bootstrap|responsive|web|template|website|theme|page)\b/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function render() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const cat = document.getElementById('category').value;
+  const grid = document.getElementById('grid');
+  const noRes = document.getElementById('no-results');
+  const info = document.getElementById('result-info');
+
+  const filtered = templates.filter(t =>
+    (!q || t.folder.toLowerCase().includes(q)) &&
+    (!cat || t.cat === cat)
+  );
+
+  info.textContent = `Showing ${filtered.length} of ${templates.length} templates`;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    noRes.style.display = 'block';
+    return;
+  }
+
+  noRes.style.display = 'none';
+
+  grid.innerHTML = filtered.map(t => {
+    const isSelected = selected.includes(t.folder);
+    return `
+      <div class="card${isSelected ? ' selected' : ''}" data-folder="${t.folder}">
+        <div class="preview-wrap" onclick="openTemplate('${t.folder}')">
+          <div class="preview-placeholder">◻</div>
+          <div class="preview-overlay"></div>
+        </div>
+        <div class="card-footer">
+          <div class="select-check" onclick="toggleSelect(event,'${t.folder}')">${isSelected ? '✓' : ''}</div>
+          <span class="card-name" title="${t.folder}">${niceName(t.folder)}</span>
+          <span class="cat-tag cat-${t.cat}">${catLabels[t.cat]}</span>
+          <a class="open-btn" href="${t.folder}/index.html" target="_blank" onclick="event.stopPropagation()">↗</a>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Lazy-load previews via IntersectionObserver
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const wrap = entry.target;
+          const folder = wrap.closest('.card').dataset.folder;
+          if (!previewLoaded[folder]) {
+            previewLoaded[folder] = true;
+            const iframe = document.createElement('iframe');
+            iframe.src = `${folder}/index.html`;
+            iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts');
+            wrap.innerHTML = '';
+            wrap.appendChild(iframe);
+            const overlay = document.createElement('div');
+            overlay.className = 'preview-overlay';
+            overlay.onclick = () => openTemplate(folder);
+            wrap.appendChild(overlay);
+          }
+          obs.unobserve(wrap);
+        }
+      });
+    }, { rootMargin: '200px' });
+
+    document.querySelectorAll('.preview-wrap').forEach(el => obs.observe(el));
+  }
+}
+
+function toggleSelect(e, folder) {
+  e.stopPropagation();
+  if (selected.includes(folder)) {
+    selected = selected.filter(f => f !== folder);
+  } else if (selected.length < 2) {
+    selected.push(folder);
+  } else {
+    selected.shift();
+    selected.push(folder);
+  }
+  updateCompareBtn();
+  render();
+}
+
+function updateCompareBtn() {
+  const btn = document.getElementById('compare-btn');
+  btn.textContent = `Compare (${selected.length}/2)`;
+  btn.disabled = selected.length < 2;
+}
+
+function openTemplate(folder) {
+  window.open(`${folder}/index.html`, '_blank');
+}
+
+function openCompare() {
+  if (selected.length < 2) return;
+  document.getElementById('frame-a').src = `${selected[0]}/index.html`;
+  document.getElementById('frame-b').src = `${selected[1]}/index.html`;
+  document.getElementById('label-a').textContent = niceName(selected[0]);
+  document.getElementById('label-b').textContent = niceName(selected[1]);
+  document.getElementById('compare-modal').classList.add('open');
+}
+
+function closeCompare() {
+  document.getElementById('compare-modal').classList.remove('open');
+  document.getElementById('frame-a').src = 'about:blank';
+  document.getElementById('frame-b').src = 'about:blank';
+}
+
+document.getElementById('compare-btn').addEventListener('click', openCompare);
+document.getElementById('search').addEventListener('input', render);
+document.getElementById('category').addEventListener('change', render);
+
+render();
+</script>
+</body>
+</html>

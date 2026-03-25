@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv index.html index_old.html)",
+      "Bash(mv flora-portfolio.html index.html)"
+    ]
+  }
+}
