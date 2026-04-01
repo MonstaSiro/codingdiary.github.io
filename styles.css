@@ -1,25 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --bg-dark: #0a0a0a;
+    --bg-card: #111111;
+    --bg-card2: #161616;
+    --accent: #2B44FF;
+    --text-light: #ffffff;
+    --text-muted: #8890a4;
+    --border: #1e1e1e;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
+    font-family: 'Manrope', Arial, sans-serif;
+    margin: 0;
     padding: 20px;
-    background-color: #f4f4f4;
+    background-color: var(--bg-dark);
+    color: var(--text-light);
     text-align: left;
+    min-height: 100vh;
 }
-h1, h3 {
-    color: #333;
+
+h1, h2, h3 {
+    color: var(--text-light);
 }
+
+h1 { font-size: 1.8em; font-weight: 800; margin-bottom: 12px; }
+h2 { font-size: 1.5em; font-weight: 700; margin-bottom: 10px; }
+h3 { font-size: 1.2em; font-weight: 600; margin-bottom: 8px; }
+
+p { color: var(--text-muted); line-height: 1.6; margin-bottom: 10px; }
+b, strong { color: var(--text-light); }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
 .container {
     max-width: 800px;
     margin: 0 auto;
-    background: #fff;
-    padding: 20px;
+    background: var(--bg-card);
+    padding: 28px;
     border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0 1px var(--border), 0px 4px 24px rgba(0, 0, 0, 0.5);
 }
+
+.date {
+    font-size: 0.85em;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    letter-spacing: 0.05em;
+}
+
 pre {
-    background-color: #2d2d2d;
+    background-color: #0d0d0d;
     color: #f8f8f2;
-    padding: 10px;
-    border-radius: 5px;
+    padding: 16px;
+    border-radius: 6px;
     overflow-x: auto;
+    border: 1px solid var(--border);
+    font-size: 0.9em;
+    line-height: 1.5;
+}
+
+code {
+    font-family: 'Fira Mono', 'Consolas', monospace;
+}
+
+ul, ol {
+    padding-left: 1.5em;
+    color: var(--text-muted);
+    line-height: 1.7;
+}
+
+li { margin-bottom: 4px; }
+
+hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 20px 0;
 }
