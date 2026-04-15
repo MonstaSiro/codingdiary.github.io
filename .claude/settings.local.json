@@ -2,7 +2,14 @@
   "permissions": {
     "allow": [
       "Bash(mv index.html index_old.html)",
-      "Bash(mv flora-portfolio.html index.html)"
+      "Bash(mv flora-portfolio.html index.html)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "WebSearch",
+      "Bash(ls /Users/floragong/Desktop/myself/projects/codingdiary.github.io/bacon*)",
+      "Read(//Users/floragong/.claude/**)",
+      "Bash(npx skills:*)"
     ]
   }
 }

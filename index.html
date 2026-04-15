@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flora Gong — Product Data Scientist</title>
+<title>Flora Gong — AI System Builder & Strategist</title>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 
@@ -168,11 +168,15 @@ body { font-family: var(--font); background: var(--bg-dark); }
 /* =============================================
    SLIDE 2 — STATS  (dark)
    ============================================= */
-.slide-stats { background: var(--bg-dark); justify-content: center; padding: var(--slide-padding); }
+.slide-stats {
+    background: #0c0c10;
+    justify-content: center; padding: var(--slide-padding);
+}
 .slide-stats::before {
     content: ''; position: absolute; inset: 0; pointer-events: none;
-    background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-    background-size: 50px 50px;
+    background:
+        radial-gradient(ellipse 65% 60% at 10% 85%, rgba(110,50,200,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 55% 50% at 88% 12%, rgba(160,80,255,0.12) 0%, transparent 70%);
 }
 .stats-inner { position: relative; z-index: 1; max-width: min(90vw, 1000px); width: 100%; margin: 0 auto; }
 .section-kicker {
@@ -201,11 +205,12 @@ body { font-family: var(--font); background: var(--bg-dark); }
 /* =============================================
    SLIDE 3 — MONETARIA  (white + left blue bar)
    ============================================= */
-.slide-experience { background: var(--bg-dark); padding: var(--slide-padding); justify-content: center; }
+.slide-experience { background: #0c0c10; padding: var(--slide-padding); justify-content: center; }
 .slide-experience::before {
     content: ''; position: absolute; inset: 0; pointer-events: none;
-    background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-    background-size: 44px 44px;
+    background:
+        radial-gradient(ellipse 60% 55% at 92% 88%, rgba(110,50,200,0.15) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 45% at 5% 8%, rgba(160,80,255,0.10) 0%, transparent 70%);
 }
 .slide-experience::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--accent); }
 .exp-inner { position: relative; z-index: 1; max-width: min(90vw, 900px); width: 100%; margin: 0 auto; }
@@ -250,16 +255,16 @@ body { font-family: var(--font); background: var(--bg-dark); }
 /* =============================================
    SLIDE 5 — CAPABILITIES  (blue)
    ============================================= */
-.slide-capabilities { background: #c8dff0; padding: var(--slide-padding); justify-content: center; }
+.slide-capabilities { background: #e8e0f5; padding: var(--slide-padding); justify-content: center; }
 .cap-inner { position: relative; z-index: 1; max-width: min(90vw, 960px); width: 100%; margin: 0 auto; }
-.cap-heading { font-size: clamp(1.6rem, 4vw, 3.2rem); font-weight: 800; color: #0f1e2e; letter-spacing: -0.02em; line-height: 1; margin-bottom: clamp(18px, 3.5vh, 36px); }
-.cap-heading em { font-style: normal; color: #4a7fa8; opacity: 1; }
+.cap-heading { font-size: clamp(1.6rem, 4vw, 3.2rem); font-weight: 800; color: #1a0e2e; letter-spacing: -0.02em; line-height: 1; margin-bottom: clamp(18px, 3.5vh, 36px); }
+.cap-heading em { font-style: normal; color: #7c44cc; opacity: 1; }
 .cap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(10px, 1.8vw, 18px); }
-.cap-card { background: rgba(255,255,255,0.45); border: 1px solid rgba(255,255,255,0.7); padding: clamp(14px, 2.5%, 22px); transition: background 0.2s; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
-.cap-card:hover { background: rgba(255,255,255,0.62); }
+.cap-card { background: rgba(255,255,255,0.5); border: 1px solid rgba(200,180,240,0.6); padding: clamp(14px, 2.5%, 22px); transition: background 0.2s; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.cap-card:hover { background: rgba(255,255,255,0.68); }
 .cap-icon { font-size: clamp(1.1rem, 2.2vw, 1.6rem); margin-bottom: clamp(7px, 1.3vh, 12px); display: block; }
-.cap-title { font-size: clamp(0.78rem, 1.5vw, 1.05rem); font-weight: 800; color: #0f1e2e; letter-spacing: -0.01em; margin-bottom: 5px; }
-.cap-desc { font-size: clamp(0.6rem, 0.98vw, 0.78rem); font-weight: 400; color: #4a6880; line-height: 1.5; }
+.cap-title { font-size: clamp(0.78rem, 1.5vw, 1.05rem); font-weight: 800; color: #1a0e2e; letter-spacing: -0.01em; margin-bottom: 5px; }
+.cap-desc { font-size: clamp(0.6rem, 0.98vw, 0.78rem); font-weight: 400; color: #5a4878; line-height: 1.5; }
 
 /* =============================================
    SLIDE 6 — TECH STACK  (white + right blue bar)
@@ -538,6 +543,7 @@ body { font-family: var(--font); background: var(--bg-dark); }
 <div class="save-notice" id="saveNotice">Saved ✓</div>
 <div class="kb-hint keyboard-hint">↑↓ Navigate · E Edit · ⌘S Save</div>
 
+
 <!-- =============================================
      SLIDE 1 — TITLE
      ============================================= -->
@@ -548,7 +554,7 @@ body { font-family: var(--font); background: var(--bg-dark); }
       <div class="title-bg-overlay"></div>
     </div>
     <div class="title-main">
-      <div class="title-kicker reveal d1" data-editable>Product Analyst &amp; Strategist</div>
+      <div class="title-kicker reveal d1" data-editable>AI System Builder &amp; Strategist</div>
       <h1 class="title-name reveal d2" data-editable>Flora<br>Gong<em>.</em></h1>
       <div class="title-journey reveal d3">Shanghai → New York</div>
     </div>
@@ -733,7 +739,7 @@ body { font-family: var(--font); background: var(--bg-dark); }
      ============================================= -->
 <section class="slide slide-capabilities" id="slide-6" aria-label="Core capabilities">
   <div class="cap-inner">
-    <div class="section-kicker reveal d1" style="color:#4a7fa8;">Core Capabilities</div>
+    <div class="section-kicker reveal d1" style="color:#7c44cc;">Core Capabilities</div>
     <h2 class="cap-heading reveal d2">What I Do<em>.</em></h2>
     <div class="cap-grid">
       <div class="cap-card reveal d3">
