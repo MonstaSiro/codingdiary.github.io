@@ -9,7 +9,11 @@
       "WebSearch",
       "Bash(ls /Users/floragong/Desktop/myself/projects/codingdiary.github.io/bacon*)",
       "Read(//Users/floragong/.claude/**)",
-      "Bash(npx skills:*)"
+      "Bash(npx skills:*)",
+      "Read(//Users/floragong/projects/**)",
+      "Bash(git -C '/Users/floragong/projects/leetcode webpage' ls-files)",
+      "Bash(gh repo:*)",
+      "Bash(gh auth:*)"
     ]
   }
 }
