@@ -1022,6 +1022,7 @@ class SlidePresentation {
     setupKeyboard() {
         document.addEventListener('keydown', e => {
             if (e.target.getAttribute('contenteditable') === 'true') return;
+            if (['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return;
             if (['ArrowDown', 'ArrowRight', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); this.next(); }
             else if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); this.prev(); }
         });
