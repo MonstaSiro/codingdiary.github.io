@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>On the Floor — Flora Gong</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #080601;
+    --accent: #c4a87a;
+    --accent-bright: #e8d4a8;
+    --accent-dim: rgba(196,168,122,0.15);
+    --font: 'Manrope', sans-serif;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg); color: #fff; min-height: 100vh; }
+
+/* === NAV === */
+.nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px clamp(20px, 5vw, 60px);
+    background: linear-gradient(to bottom, rgba(8,6,1,0.92) 0%, transparent 100%);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.nav-back {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s;
+}
+.nav-back:hover { color: var(--accent); }
+.nav-back svg { transition: transform 0.2s; }
+.nav-back:hover svg { transform: translateX(-3px); }
+.nav-logo { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.12em; color: rgba(255,255,255,0.6); }
+.nav-logo span { color: var(--accent); }
+
+/* === HERO === */
+.hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    justify-content: flex-end; padding: clamp(80px, 12vh, 140px) clamp(20px, 5vw, 60px) clamp(40px, 7vh, 80px);
+    position: relative; overflow: hidden;
+}
+.hero-bg {
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(ellipse 70% 55% at 90% 15%, rgba(130,96,24,0.28) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 45% at 5% 85%, rgba(58,40,6,0.5) 0%, transparent 60%),
+        linear-gradient(155deg, #100c02 0%, #1e1402 50%, #080601 100%);
+}
+.hero-bg-lines {
+    position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(
+        -52deg,
+        rgba(196,168,122,0.04) 0px, rgba(196,168,122,0.04) 1px,
+        transparent 1px, transparent 32px
+    );
+}
+.hero-content { position: relative; z-index: 1; max-width: 900px; }
+.hero-kicker {
+    font-size: clamp(0.58rem, 1vw, 0.72rem); font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent);
+    margin-bottom: clamp(12px, 2vh, 20px);
+}
+.hero-title {
+    font-size: clamp(3rem, 9vw, 8.5rem); font-weight: 800;
+    letter-spacing: -0.03em; line-height: 0.9; color: #f5edd8;
+}
+.hero-title em { font-style: normal; color: var(--accent); }
+.hero-sub {
+    margin-top: clamp(14px, 2.5vh, 24px);
+    font-size: clamp(0.8rem, 1.5vw, 1.05rem); font-weight: 300;
+    color: rgba(255,255,255,0.35); letter-spacing: 0.02em; max-width: 540px; line-height: 1.6;
+}
+.hero-badges {
+    margin-top: clamp(20px, 3.5vh, 36px);
+    display: flex; flex-wrap: wrap; gap: 8px;
+}
+.hero-badge {
+    font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(196,168,122,0.7); border: 1px solid rgba(196,168,122,0.2);
+    padding: 5px 12px;
+}
+
+/* === DANCE STYLES SECTION === */
+.styles-section { padding: clamp(40px, 7vh, 80px) clamp(20px, 5vw, 60px); }
+.styles-header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: clamp(24px, 4vh, 44px); gap: 16px; flex-wrap: wrap;
+}
+.styles-label {
+    font-size: clamp(0.58rem, 0.9vw, 0.7rem); font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent);
+}
+.styles-title {
+    font-size: clamp(1.4rem, 3.5vw, 2.8rem); font-weight: 800;
+    color: #f5edd8; letter-spacing: -0.02em;
+}
+
+/* === GALLERY GRID === */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: clamp(8px, 1.2vw, 14px);
+}
+@media (max-width: 900px) { .gallery-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 580px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.dance-card {
+    position: relative; overflow: hidden; cursor: pointer;
+    aspect-ratio: 3/4;
+    border: 1px solid rgba(196,168,122,0.08);
+    transition: transform 0.4s var(--ease), border-color 0.3s;
+}
+.dance-card:hover { transform: scale(1.025); border-color: rgba(196,168,122,0.28); }
+.dance-card-bg {
+    position: absolute; inset: 0;
+    transition: transform 0.6s var(--ease);
+}
+.dance-card:hover .dance-card-bg { transform: scale(1.08); }
+.dance-card-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(8,6,1,0.94) 0%, rgba(8,6,1,0.2) 55%, transparent 100%);
+    opacity: 0.5; transition: opacity 0.3s;
+}
+.dance-card:hover .dance-card-overlay { opacity: 1; }
+.dance-card-info {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: clamp(10px, 1.5vw, 16px);
+}
+.dance-card-style {
+    font-size: clamp(0.45rem, 0.7vw, 0.56rem); font-weight: 700;
+    letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 3px;
+}
+.dance-card-event {
+    font-size: clamp(0.66rem, 1.1vw, 0.86rem); font-weight: 700;
+    color: rgba(255,255,255,0.85); letter-spacing: -0.01em; line-height: 1.2;
+    transform: translateY(6px); opacity: 0; transition: transform 0.35s var(--ease), opacity 0.3s;
+}
+.dance-card:hover .dance-card-event { transform: translateY(0); opacity: 1; }
+.dance-card-placeholder {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    opacity: 0.15;
+}
+.dance-card-placeholder svg { width: clamp(24px, 3.5vw, 38px); height: clamp(24px, 3.5vw, 38px); }
+
+/* Card gradients — dance-specific palettes */
+.dc-1 .dance-card-bg { background: linear-gradient(155deg, #080614 0%, #18103a 45%, #3030a0 80%, #6060e0 100%); }
+.dc-2 .dance-card-bg { background: linear-gradient(155deg, #140002 0%, #3a000a 45%, #900018 80%, #c80028 100%); }
+.dc-3 .dance-card-bg { background: linear-gradient(155deg, #120c00 0%, #3a2800 45%, #7c5800 80%, #c4a030 100%); }
+.dc-4 .dance-card-bg { background: linear-gradient(155deg, #100010 0%, #300830 45%, #701060 80%, #b01890 100%); }
+.dc-5 .dance-card-bg { background: linear-gradient(155deg, #080600 0%, #201600 45%, #504000 80%, #907800 100%); }
+.dc-6 .dance-card-bg { background: linear-gradient(155deg, #0c0000 0%, #300808 45%, #601818 80%, #983030 100%); }
+.dc-7 .dance-card-bg { background: linear-gradient(155deg, #080c00 0%, #203000 45%, #486000 80%, #90b020 100%); }
+.dc-8 .dance-card-bg { background: linear-gradient(155deg, #020814 0%, #081828 45%, #103c60 80%, #2870b0 100%); }
+
+/* Stripe patterns */
+.dc-1 .dance-card-bg::after, .dc-5 .dance-card-bg::after {
+    content: ''; position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 1px, transparent 0, transparent 20px);
+}
+
+/* === STYLE INFO GRID === */
+.style-grid {
+    margin-top: clamp(50px, 8vh, 80px);
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: clamp(10px, 1.8vw, 16px);
+}
+@media (max-width: 800px) { .style-grid { grid-template-columns: repeat(2, 1fr); } }
+.style-pill {
+    border: 1px solid rgba(196,168,122,0.15); border-top: 2px solid var(--accent);
+    padding: clamp(14px, 2.5vh, 22px);
+}
+.style-pill-name {
+    font-size: clamp(0.9rem, 1.8vw, 1.3rem); font-weight: 800;
+    color: #f5edd8; letter-spacing: -0.01em; margin-bottom: 5px;
+}
+.style-pill-origin {
+    font-size: clamp(0.52rem, 0.8vw, 0.64rem); font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
+    margin-bottom: 8px;
+}
+.style-pill-desc {
+    font-size: clamp(0.6rem, 0.95vw, 0.74rem); color: rgba(255,255,255,0.3);
+    line-height: 1.5;
+}
+
+/* === COMING SOON === */
+.coming-soon {
+    margin-top: clamp(40px, 7vh, 70px);
+    border: 1px dashed rgba(196,168,122,0.2);
+    padding: clamp(24px, 4vh, 44px);
+    text-align: center; position: relative; overflow: hidden;
+}
+.coming-soon::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(130,96,24,0.06) 0%, transparent 60%);
+}
+.coming-soon-title {
+    font-size: clamp(0.68rem, 1.2vw, 0.9rem); font-weight: 700;
+    color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase;
+    margin-bottom: 8px; position: relative;
+}
+.coming-soon-text {
+    font-size: clamp(0.72rem, 1.2vw, 0.88rem); color: rgba(255,255,255,0.28);
+    line-height: 1.6; max-width: 500px; margin: 0 auto; position: relative;
+}
+
+/* === FOOTER === */
+.footer {
+    padding: clamp(28px, 5vh, 50px) clamp(20px, 5vw, 60px);
+    border-top: 1px solid rgba(196,168,122,0.08);
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+}
+.footer-left { font-size: 0.65rem; color: rgba(255,255,255,0.2); letter-spacing: 0.08em; }
+.footer-right { display: flex; gap: 20px; }
+.footer-link {
+    font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(255,255,255,0.25); text-decoration: none; transition: color 0.2s;
+}
+.footer-link:hover { color: var(--accent); }
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.hero-kicker { animation: fadeUp 0.6s 0.1s both var(--ease); }
+.hero-title { animation: fadeUp 0.7s 0.2s both var(--ease); }
+.hero-sub { animation: fadeUp 0.7s 0.35s both var(--ease); }
+.hero-badges { animation: fadeUp 0.6s 0.5s both var(--ease); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="../index.html" class="nav-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    floragong.com
+  </a>
+  <div class="nav-logo">F<span>G</span> / Dance</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-bg-lines"></div>
+  <div class="hero-content">
+    <div class="hero-kicker">Ballroom · Latin · Showcase</div>
+    <h1 class="hero-title">On the<br>Floor<em>.</em></h1>
+    <p class="hero-sub">Competitive ballroom dancer based in New York. From the sweeping elegance of Viennese Waltz to the fire of Paso Doble — every dance is a story told through movement.</p>
+    <div class="hero-badges">
+      <span class="hero-badge">Standard</span>
+      <span class="hero-badge">Latin</span>
+      <span class="hero-badge">Showcase</span>
+      <span class="hero-badge">Social Dance</span>
+      <span class="hero-badge">NYU Ballroom</span>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="styles-section">
+  <div class="styles-header">
+    <div>
+      <div class="styles-label">Competition · Performance · Studio</div>
+      <div class="styles-title">The Gallery</div>
+    </div>
+  </div>
+
+  <div class="gallery-grid">
+
+    <div class="dance-card dc-1">
+      <div class="dance-card-bg"></div>
+      <div class="dance-card-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M9 2a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/><path d="M9 14c-3.866 0-7 1.79-7 4v1h14v-1c0-2.21-3.134-4-7-4z"/><path d="M18 8l4 4-4 4"/><path d="M22 12H13"/></svg>
+      </div>
+      <div class="dance-card-overlay"></div>
+      <div class="dance-card-info">
+        <div class="dance-card-style">Viennese Waltz</div>
+        <div class="dance-card-event">State Competition · Silver Level</div>
+      </div>
+    </div>
+
+    <div class="dance-card dc-2">
+      <div class="dance-card-bg"></div>
+      <div class="dance-card-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M9 2a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/><path d="M9 14c-3.866 0-7 1.79-7 4v1h14v-1c0-2.21-3.134-4-7-4z"/></svg>
+      </div>
+      <div class="dance-card-overlay"></div>
+      <div class="dance-card-info">
+        <div class="dance-card-style">Paso Doble</div>
+        <div class="dance-card-event">Fall Classic · Showcase Division</div>
+      </div>
+    </div>
+
+    <div class="dance-card dc-3">
+      <div class="dance-card-bg"></div>
+      <div class="dance-card-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M9 2a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/><path d="M9 14c-3.866 0-7 1.79-7 4v1h14v-1c0-2.21-3.134-4-7-4z"/></svg>
+      </div>
+      <div class="dance-card-overlay"></div>
+      <div class="dance-card-info">
+        <div class="dance-card-style">Foxtrot</div>
+        <div class="dance-card-event">NYU Spring Invitational</div>
+      </div>
+    </div>
+
+    <div class="dance-card dc-4">
+      <div class="dance-card-bg"></div>
+      <div class="dance-card-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M9 2a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/><path d="M9 14c-3.866 0-7 1.79-7 4v1h14v-1c0-2.21-3.134-4-7-4z"/></svg>
+      </div>
+      <div class="dance-card-overlay"></div>
+      <div class="dance-card-info">
+        <div class="dance-card-style">Rumba</div>
+        <div class="dance-card-event">Latin Championship · Bronze</div>
+      </div>
+    </div>
+
+    <div class="dance-card dc-5">
+      <div class="dance-card-bg"></div>
+      <div class="dance-card-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M9 2a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/><path d="M9 14c-3.866 0-7 1.79-7 4v1h14v-1c0-2.21-3.134-4-7-4z"/></svg>
+      </div>
+      <div class="dance-card-overlay"></div>
+      <div class="dance-card-info">
+        <div class="dance-card-style">Tango</div>
+        <div class="dance-card-event">Studio Showcase · Black &amp; Gold</div>
+      </div>
+    </div>
+
+    <div class="dance-card dc-6">
+      <div class="dance-card-bg"></div>
+      <div class="dance-card-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M9 2a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/><path d="M9 14c-3.866 0-7 1.79-7 4v1h14v-1c0-2.21-3.134-4-7-4z"/></svg>
+      </div>
+      <div class="dance-card-overlay"></div>
+      <div class="dance-card-info">
+        <div class="dance-card-style">Cha Cha</div>
+        <div class="dance-card-event">Open Level · Summer Heat</div>
+      </div>
+    </div>
+
+    <div class="dance-card dc-7">
+      <div class="dance-card-bg"></div>
+      <div class="dance-card-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M9 2a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/><path d="M9 14c-3.866 0-7 1.79-7 4v1h14v-1c0-2.21-3.134-4-7-4z"/></svg>
+      </div>
+      <div class="dance-card-overlay"></div>
+      <div class="dance-card-info">
+        <div class="dance-card-style">Samba</div>
+        <div class="dance-card-event">Festival Showcase · Carnival</div>
+      </div>
+    </div>
+
+    <div class="dance-card dc-8">
+      <div class="dance-card-bg"></div>
+      <div class="dance-card-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </div>
+      <div class="dance-card-overlay"></div>
+      <div class="dance-card-info">
+        <div class="dance-card-style">Waltz</div>
+        <div class="dance-card-event">Year-End Gala · Studio Portrait</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Dance styles info -->
+  <div class="style-grid">
+    <div class="style-pill">
+      <div class="style-pill-name">Waltz</div>
+      <div class="style-pill-origin">Standard · England</div>
+      <div class="style-pill-desc">Flowing, romantic. Rise and fall through open space — the foundation of Standard ballroom.</div>
+    </div>
+    <div class="style-pill">
+      <div class="style-pill-name">Tango</div>
+      <div class="style-pill-origin">Standard · Argentina</div>
+      <div class="style-pill-desc">Sharp, staccato. A dramatic conversation between partners — intensity is everything.</div>
+    </div>
+    <div class="style-pill">
+      <div class="style-pill-name">Cha Cha</div>
+      <div class="style-pill-origin">Latin · Cuba</div>
+      <div class="style-pill-desc">Playful, syncopated. The "1-2-3-cha-cha" rhythm that owns any dance floor.</div>
+    </div>
+    <div class="style-pill">
+      <div class="style-pill-name">Rumba</div>
+      <div class="style-pill-origin">Latin · Cuba</div>
+      <div class="style-pill-desc">Slow, sensual, story-driven. The dance of love — every step is intentional.</div>
+    </div>
+  </div>
+
+  <div class="coming-soon">
+    <div class="coming-soon-title">Competition Photos Loading...</div>
+    <div class="coming-soon-text">Real competition and showcase photos will fill this gallery soon. Currently training and competing in New York. Stay tuned for event recaps and behind-the-scenes content.</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-left">Flora Gong · On the Floor</div>
+  <div class="footer-right">
+    <a href="../index.html" class="footer-link">← Home</a>
+    <a href="cosplay.html" class="footer-link">Cosplay →</a>
+    <a href="lab.html" class="footer-link">The Lab →</a>
+  </div>
+</footer>
+
+</body>
+</html>

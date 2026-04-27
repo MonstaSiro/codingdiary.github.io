@@ -522,6 +522,98 @@ body { font-family: var(--font); background: var(--bg-dark); }
 .save-notice.show { opacity: 1; }
 .kb-hint { position: fixed; bottom: 18px; right: 22px; font-family: var(--font); font-size: 11px; color: rgba(150,150,150,0.35); letter-spacing: 0.06em; z-index: 800; pointer-events: none; }
 
+/* === HOBBY LINKS === */
+.hobby-link {
+    color: inherit; text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,0.18); padding-bottom: 1px;
+    transition: color 0.2s, border-color 0.2s; white-space: nowrap;
+}
+.hobby-link:hover { color: var(--warm-gold); border-color: var(--warm-gold); }
+
+/* =============================================
+   SLIDE — CREATIVE WORKS
+   ============================================= */
+.slide-creative { background: #06060f; padding: var(--slide-padding); justify-content: center; }
+.slide-creative::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background:
+        radial-gradient(ellipse 70% 50% at 15% 100%, rgba(120,50,210,0.13) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 45% at 85% 0%, rgba(196,168,122,0.07) 0%, transparent 65%);
+}
+.creative-inner { position: relative; z-index: 1; max-width: min(92vw, 1020px); width: 100%; margin: 0 auto; }
+.creative-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: clamp(10px, 1.8vw, 18px); height: clamp(240px, 44vh, 410px);
+    margin-top: clamp(14px, 2.5vh, 26px);
+}
+@media (max-width: 680px) {
+    .creative-grid { grid-template-columns: 1fr; height: auto; gap: 10px; }
+    .creative-card { min-height: 130px; }
+}
+.creative-card {
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: clamp(14px, 2.2%, 22px); text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: transform 0.4s var(--ease-expo), border-color 0.3s;
+}
+.creative-card:hover { transform: translateY(-5px); }
+.creative-card-bg { position: absolute; inset: 0; transition: transform 0.65s var(--ease-expo); }
+.creative-card:hover .creative-card-bg { transform: scale(1.06); }
+.creative-card-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0.1) 100%);
+}
+.creative-card-body { position: relative; z-index: 1; }
+.creative-card-tag {
+    font-size: clamp(0.48rem, 0.75vw, 0.6rem); font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 5px;
+}
+.creative-card-title {
+    font-size: clamp(1rem, 2vw, 1.5rem); font-weight: 800;
+    color: #fff; letter-spacing: -0.02em; line-height: 1.05; margin-bottom: 4px;
+}
+.creative-card-sub {
+    font-size: clamp(0.56rem, 0.88vw, 0.7rem);
+    color: rgba(255,255,255,0.42); font-weight: 400; line-height: 1.4;
+}
+.creative-card-cta {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: clamp(0.52rem, 0.8vw, 0.65rem); font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    margin-top: clamp(8px, 1.4vh, 12px); transition: gap 0.2s;
+}
+.creative-card:hover .creative-card-cta { gap: 9px; }
+/* Cosplay card */
+.creative-card.card-cosplay .creative-card-bg { background: linear-gradient(145deg, #0c0218 0%, #2a0a4a 45%, #5918a0 100%); }
+.creative-card.card-cosplay .creative-card-bg::after {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(167,100,255,0.22) 1px, transparent 1px);
+    background-size: 22px 22px;
+}
+.creative-card.card-cosplay:hover { border-color: rgba(167,100,255,0.38); }
+.creative-card.card-cosplay .creative-card-tag { color: #c880ff; }
+.creative-card.card-cosplay .creative-card-cta { color: #c880ff; }
+/* Dance card */
+.creative-card.card-dance .creative-card-bg { background: linear-gradient(145deg, #100c02 0%, #3a2806 50%, #826018 100%); }
+.creative-card.card-dance .creative-card-bg::after {
+    content: ''; position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(-45deg, rgba(196,168,122,0.07) 0px, rgba(196,168,122,0.07) 1px, transparent 1px, transparent 18px);
+}
+.creative-card.card-dance:hover { border-color: rgba(196,168,122,0.38); }
+.creative-card.card-dance .creative-card-tag { color: #c4a87a; }
+.creative-card.card-dance .creative-card-cta { color: #c4a87a; }
+/* Lab card */
+.creative-card.card-lab .creative-card-bg { background: linear-gradient(145deg, #020b1c 0%, #091d3d 50%, #0c3262 100%); }
+.creative-card.card-lab .creative-card-bg::after {
+    content: ''; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(43,100,255,0.09) 1px, transparent 1px), linear-gradient(90deg, rgba(43,100,255,0.09) 1px, transparent 1px);
+    background-size: 26px 26px;
+}
+.creative-card.card-lab:hover { border-color: rgba(43,100,255,0.42); }
+.creative-card.card-lab .creative-card-tag { color: #5590ff; }
+.creative-card.card-lab .creative-card-cta { color: #5590ff; }
+
 /* === SLIDE 1 — PHOTO BACKGROUND + WARM THEME === */
 :root { --warm-gold: #c4a87a; }
 
@@ -630,14 +722,12 @@ body { font-family: var(--font); background: var(--bg-dark); }
       <div class="title-journey reveal d3">Shanghai → New York</div>
     </div>
     <div class="title-hobbies reveal d2">
-
-      <span>Also know as a:</span>
-      <span>💃 Ballroom Dancer</span>
+      <span>Also known as:</span>
+      <a href="portfolio/dance.html" class="hobby-link">💃 Ballroom Dancer</a>
       <span>🏃 Marathon Runner</span>
       <span>🥊 Boxer</span>
-      
       <span>🚴 Biker</span>
-      <span>🎭 Model</span>
+      <a href="portfolio/cosplay.html" class="hobby-link">🎭 Cosplayer · Model</a>
       <span>🐱 Cat Mom</span>
     </div>
   </div>
@@ -934,7 +1024,49 @@ body { font-family: var(--font); background: var(--bg-dark); }
 </section>
 
 <!-- =============================================
-     SLIDE 8 — CLOSING
+     SLIDE — CREATIVE WORKS
+     ============================================= -->
+<section class="slide slide-creative" id="slide-creative" aria-label="Creative Works">
+  <div class="creative-inner">
+    <div class="section-kicker reveal d1" style="color:#c4a87a;">Beyond the Code</div>
+    <h2 class="skills-heading reveal d2" style="margin-bottom:0;">Creative<br>Works<em style="color:#c4a87a;">.</em></h2>
+    <div class="creative-grid">
+      <a href="portfolio/cosplay.html" class="creative-card card-cosplay reveal d3">
+        <div class="creative-card-bg"></div>
+        <div class="creative-card-overlay"></div>
+        <div class="creative-card-body">
+          <div class="creative-card-tag">Photography · Model</div>
+          <div class="creative-card-title">Cosplay &<br>Shoots</div>
+          <div class="creative-card-sub">Characters, fashion &amp; editorial work</div>
+          <div class="creative-card-cta">View Gallery →</div>
+        </div>
+      </a>
+      <a href="portfolio/dance.html" class="creative-card card-dance reveal d4">
+        <div class="creative-card-bg"></div>
+        <div class="creative-card-overlay"></div>
+        <div class="creative-card-body">
+          <div class="creative-card-tag">Competitive Dance</div>
+          <div class="creative-card-title">On the<br>Floor</div>
+          <div class="creative-card-sub">Ballroom, Latin &amp; Showcase</div>
+          <div class="creative-card-cta">View Gallery →</div>
+        </div>
+      </a>
+      <a href="portfolio/lab.html" class="creative-card card-lab reveal d5">
+        <div class="creative-card-bg"></div>
+        <div class="creative-card-overlay"></div>
+        <div class="creative-card-body">
+          <div class="creative-card-tag">Built with Vibes</div>
+          <div class="creative-card-title">The<br>Lab</div>
+          <div class="creative-card-sub">Vibecoded experiments &amp; toys</div>
+          <div class="creative-card-cta">Enter Lab →</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     SLIDE — CLOSING
      ============================================= -->
 <section class="slide slide-closing" id="slide-9" aria-label="Contact">
   <div class="closing-inner">
