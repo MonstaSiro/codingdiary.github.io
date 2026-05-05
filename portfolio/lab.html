@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Lab — Flora Gong</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #020b1c;
+    --accent: #4d90ff;
+    --accent-dim: rgba(43,100,255,0.15);
+    --green: #22c55e;
+    --pink: #f472b6;
+    --gold: #c4a87a;
+    --purple: #c880ff;
+    --font: 'Manrope', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg); color: #fff; min-height: 100vh; }
+
+/* === NAV === */
+.nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px clamp(20px, 5vw, 60px);
+    background: linear-gradient(to bottom, rgba(2,11,28,0.95) 0%, transparent 100%);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.nav-back {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s;
+}
+.nav-back:hover { color: var(--accent); }
+.nav-back svg { transition: transform 0.2s; }
+.nav-back:hover svg { transform: translateX(-3px); }
+.nav-logo { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.12em; color: rgba(255,255,255,0.6); }
+.nav-logo span { color: var(--accent); }
+
+/* === HERO === */
+.hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    justify-content: flex-end; padding: clamp(80px, 12vh, 140px) clamp(20px, 5vw, 60px) clamp(40px, 7vh, 80px);
+    position: relative; overflow: hidden;
+}
+.hero-bg {
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(ellipse 70% 55% at 85% 10%, rgba(43,68,255,0.2) 0%, transparent 60%),
+        radial-gradient(ellipse 55% 45% at 10% 90%, rgba(9,29,61,0.8) 0%, transparent 60%),
+        linear-gradient(155deg, #030d22 0%, #060e24 50%, #020b1c 100%);
+}
+.hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+        linear-gradient(rgba(43,100,255,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(43,100,255,0.07) 1px, transparent 1px);
+    background-size: 36px 36px;
+    mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, black 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, black 30%, transparent 80%);
+}
+.hero-content { position: relative; z-index: 1; max-width: 900px; }
+.hero-kicker {
+    font-size: clamp(0.58rem, 1vw, 0.72rem); font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent);
+    margin-bottom: clamp(12px, 2vh, 20px);
+    display: flex; align-items: center; gap: 8px;
+}
+.hero-kicker::before {
+    content: ''; display: block; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green); box-shadow: 0 0 8px var(--green);
+    animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.hero-title {
+    font-size: clamp(3rem, 9vw, 8.5rem); font-weight: 800;
+    letter-spacing: -0.03em; line-height: 0.9; color: #e8f0ff;
+}
+.hero-title em { font-style: normal; color: var(--accent); }
+.hero-sub {
+    margin-top: clamp(14px, 2.5vh, 24px);
+    font-size: clamp(0.8rem, 1.5vw, 1.05rem); font-weight: 300;
+    color: rgba(255,255,255,0.35); letter-spacing: 0.02em; max-width: 560px; line-height: 1.6;
+}
+.hero-cmd {
+    margin-top: clamp(20px, 3.5vh, 36px);
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: clamp(0.68rem, 1vw, 0.8rem);
+    color: var(--green); background: rgba(34,197,94,0.07);
+    border: 1px solid rgba(34,197,94,0.15);
+    padding: 8px 16px;
+}
+.hero-cmd::before { content: '$ '; opacity: 0.5; }
+
+/* === PROJECTS SECTION === */
+.projects-section { padding: clamp(40px, 7vh, 80px) clamp(20px, 5vw, 60px); }
+.projects-header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: clamp(24px, 4vh, 44px); gap: 16px; flex-wrap: wrap;
+}
+.projects-label {
+    font-size: clamp(0.58rem, 0.9vw, 0.7rem); font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent);
+}
+.projects-title {
+    font-size: clamp(1.4rem, 3.5vw, 2.8rem); font-weight: 800;
+    color: #e8f0ff; letter-spacing: -0.02em;
+}
+.projects-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: clamp(14px, 2vw, 22px);
+}
+@media (max-width: 680px) { .projects-grid { grid-template-columns: 1fr; } }
+
+/* === PROJECT CARD === */
+.project-card {
+    border: 1px solid rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.02);
+    overflow: hidden; transition: border-color 0.3s, background 0.3s;
+}
+.project-card:hover { background: rgba(255,255,255,0.04); }
+.project-card-header {
+    padding: clamp(18px, 2.5vh, 26px) clamp(18px, 2.5vw, 26px) clamp(14px, 2vh, 20px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+}
+.project-card-meta {}
+.project-tag {
+    display: inline-block;
+    font-size: 0.54rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 2px 8px; margin-bottom: 8px;
+}
+.project-name {
+    font-size: clamp(1rem, 2vw, 1.4rem); font-weight: 800;
+    color: #e8f0ff; letter-spacing: -0.02em; line-height: 1.1;
+}
+.project-desc {
+    margin-top: 5px; font-size: clamp(0.64rem, 1vw, 0.78rem);
+    color: rgba(255,255,255,0.35); line-height: 1.5;
+}
+.project-status {
+    flex-shrink: 0; font-size: 0.52rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--green); background: rgba(34,197,94,0.1);
+    border: 1px solid rgba(34,197,94,0.2);
+    padding: 3px 8px; white-space: nowrap; height: fit-content;
+}
+.project-card-demo { padding: clamp(16px, 2.5vh, 24px) clamp(18px, 2.5vw, 26px); }
+.project-card-footer {
+    padding: clamp(10px, 1.5vh, 14px) clamp(18px, 2.5vw, 26px);
+    border-top: 1px solid rgba(255,255,255,0.05);
+    display: flex; gap: 8px; flex-wrap: wrap;
+}
+.tech-tag {
+    font-family: var(--mono); font-size: 0.58rem; font-weight: 400;
+    color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06); padding: 2px 8px;
+}
+
+/* === COLOR VARIANTS FOR CARDS === */
+.card-blue .project-card { border-color: rgba(77,144,255,0.12); }
+.card-blue .project-card:hover { border-color: rgba(77,144,255,0.3); }
+.card-blue .project-tag { color: var(--accent); background: rgba(77,144,255,0.1); border: 1px solid rgba(77,144,255,0.2); }
+.card-pink .project-card { border-color: rgba(244,114,182,0.1); }
+.card-pink .project-card:hover { border-color: rgba(244,114,182,0.28); }
+.card-pink .project-tag { color: var(--pink); background: rgba(244,114,182,0.1); border: 1px solid rgba(244,114,182,0.2); }
+.card-purple .project-card { border-color: rgba(200,128,255,0.1); }
+.card-purple .project-card:hover { border-color: rgba(200,128,255,0.28); }
+.card-purple .project-tag { color: var(--purple); background: rgba(200,128,255,0.1); border: 1px solid rgba(200,128,255,0.2); }
+.card-gold .project-card { border-color: rgba(196,168,122,0.1); }
+.card-gold .project-card:hover { border-color: rgba(196,168,122,0.28); }
+.card-gold .project-tag { color: var(--gold); background: rgba(196,168,122,0.1); border: 1px solid rgba(196,168,122,0.2); }
+
+/* === DEMO COMPONENTS === */
+
+/* Vibe Oracle */
+.vibe-oracle { text-align: center; }
+.vibe-card {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+    padding: clamp(16px, 2.5vh, 24px);
+    margin-bottom: 14px; min-height: 80px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 6px; transition: background 0.4s;
+}
+.vibe-emoji { font-size: clamp(1.4rem, 3vw, 2rem); }
+.vibe-name {
+    font-size: clamp(1rem, 2vw, 1.4rem); font-weight: 800;
+    letter-spacing: -0.01em; transition: color 0.4s;
+}
+.vibe-mood {
+    font-size: clamp(0.6rem, 0.9vw, 0.72rem); color: rgba(255,255,255,0.35);
+    font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.vibe-palette { display: flex; gap: 6px; margin-bottom: 14px; justify-content: center; }
+.vibe-swatch { width: 28px; height: 28px; flex-shrink: 0; transition: background 0.4s; }
+.demo-btn {
+    font-family: var(--font); font-size: 0.68rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    background: none; border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.5); padding: 8px 20px; cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s; width: 100%;
+}
+.demo-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(77,144,255,0.06); }
+
+/* Dance Dice */
+.dance-dice { }
+.dice-display {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+    padding: clamp(14px, 2vh, 20px); margin-bottom: 12px;
+}
+.dice-dance-name {
+    font-size: clamp(1.1rem, 2.2vw, 1.6rem); font-weight: 800;
+    letter-spacing: -0.02em; margin-bottom: 8px; transition: color 0.3s;
+}
+.dice-pattern {
+    display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 8px;
+}
+.beat {
+    font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 3px 8px; border: 1px solid; transition: background 0.3s, color 0.3s;
+}
+.beat.slow { color: rgba(196,168,122,0.8); border-color: rgba(196,168,122,0.2); background: rgba(196,168,122,0.06); }
+.beat.quick { color: rgba(77,144,255,0.9); border-color: rgba(77,144,255,0.2); background: rgba(77,144,255,0.08); }
+.beat.and { color: rgba(244,114,182,0.7); border-color: rgba(244,114,182,0.15); background: rgba(244,114,182,0.05); }
+.dice-tip { font-size: 0.65rem; color: rgba(255,255,255,0.25); font-style: italic; line-height: 1.4; }
+.dice-btn { margin-top: 12px; }
+
+/* Neko Telegraph */
+.neko-area { }
+.neko-input-row { display: flex; gap: 8px; margin-bottom: 12px; }
+.neko-input {
+    flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+    color: #fff; font-family: var(--font); font-size: 0.82rem;
+    padding: 9px 12px; outline: none; transition: border-color 0.2s;
+}
+.neko-input:focus { border-color: var(--pink); }
+.neko-input::placeholder { color: rgba(255,255,255,0.2); }
+.neko-go {
+    font-family: var(--font); font-size: 0.68rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    background: rgba(244,114,182,0.12); border: 1px solid rgba(244,114,182,0.25);
+    color: var(--pink); padding: 9px 16px; cursor: pointer;
+    transition: background 0.2s, border-color 0.2s; white-space: nowrap;
+}
+.neko-go:hover { background: rgba(244,114,182,0.2); border-color: rgba(244,114,182,0.5); }
+.neko-output {
+    background: rgba(244,114,182,0.04); border: 1px solid rgba(244,114,182,0.1);
+    padding: 12px; font-size: 0.82rem; color: rgba(255,255,255,0.6);
+    min-height: 52px; line-height: 1.6; font-style: italic;
+}
+
+/* Aesthetic Match */
+.match-area { }
+.match-q { font-size: 0.72rem; color: rgba(255,255,255,0.4); margin-bottom: 6px; font-weight: 500; }
+.match-options { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.match-opt {
+    font-size: 0.62rem; font-weight: 600; letter-spacing: 0.08em;
+    padding: 5px 11px; border: 1px solid rgba(200,128,255,0.15);
+    color: rgba(200,128,255,0.6); background: rgba(200,128,255,0.04);
+    cursor: pointer; transition: all 0.18s; user-select: none;
+}
+.match-opt:hover, .match-opt.sel { border-color: var(--purple); color: var(--purple); background: rgba(200,128,255,0.1); }
+.match-result {
+    background: rgba(200,128,255,0.04); border: 1px solid rgba(200,128,255,0.1);
+    padding: 12px; font-size: 0.8rem; color: rgba(255,255,255,0.5);
+    min-height: 52px; line-height: 1.6;
+}
+
+/* === FOOTER === */
+.footer {
+    padding: clamp(28px, 5vh, 50px) clamp(20px, 5vw, 60px);
+    border-top: 1px solid rgba(77,144,255,0.08);
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+}
+.footer-left { font-size: 0.65rem; color: rgba(255,255,255,0.2); letter-spacing: 0.08em; }
+.footer-right { display: flex; gap: 20px; }
+.footer-link {
+    font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(255,255,255,0.25); text-decoration: none; transition: color 0.2s;
+}
+.footer-link:hover { color: var(--accent); }
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.hero-kicker { animation: fadeUp 0.6s 0.1s both var(--ease); }
+.hero-title { animation: fadeUp 0.7s 0.2s both var(--ease); }
+.hero-sub { animation: fadeUp 0.7s 0.35s both var(--ease); }
+.hero-cmd { animation: fadeUp 0.6s 0.5s both var(--ease); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="../index.html" class="nav-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    floragong.com
+  </a>
+  <div class="nav-logo">F<span>G</span> / Lab</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-kicker">Built with Vibes · Actually Works</div>
+    <h1 class="hero-title">The<br>Lab<em>.</em></h1>
+    <p class="hero-sub">Vibecoded experiments, mini-apps, and interactive toys. No PRD, no sprint planning — just ideas that needed to exist. All running live below.</p>
+    <div class="hero-cmd">ls ./experiments</div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="projects-section">
+  <div class="projects-header">
+    <div>
+      <div class="projects-label">Interactive · Live · Built by Flora</div>
+      <div class="projects-title">Experiments</div>
+    </div>
+  </div>
+
+  <div class="projects-grid">
+
+    <!-- PROJECT 1: VIBE ORACLE -->
+    <div class="card-blue">
+      <div class="project-card">
+        <div class="project-card-header">
+          <div class="project-card-meta">
+            <div class="project-tag">Aesthetic · Random</div>
+            <div class="project-name">Vibe Oracle</div>
+            <div class="project-desc">Consult the oracle. Get your current aesthetic assigned. No arguing with the algorithm.</div>
+          </div>
+          <div class="project-status">Live</div>
+        </div>
+        <div class="project-card-demo">
+          <div class="vibe-oracle">
+            <div class="vibe-card" id="vibeCard">
+              <div class="vibe-emoji" id="vibeEmoji">✨</div>
+              <div class="vibe-name" id="vibeName" style="color: #4d90ff;">Press to reveal</div>
+              <div class="vibe-mood" id="vibeMood">Awaiting your fate</div>
+            </div>
+            <div class="vibe-palette" id="vibePalette">
+              <div class="vibe-swatch" style="background:#1e1e2e"></div>
+              <div class="vibe-swatch" style="background:#313244"></div>
+              <div class="vibe-swatch" style="background:#45475a"></div>
+              <div class="vibe-swatch" style="background:#6c7086"></div>
+            </div>
+            <button class="demo-btn" onclick="rollVibe()">Roll My Vibe →</button>
+          </div>
+        </div>
+        <div class="project-card-footer">
+          <span class="tech-tag">vanilla js</span>
+          <span class="tech-tag">css</span>
+          <span class="tech-tag">vibes</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT 2: DANCE DICE -->
+    <div class="card-gold">
+      <div class="project-card">
+        <div class="project-card-header">
+          <div class="project-card-meta">
+            <div class="project-tag">Dance · Practice</div>
+            <div class="project-name">Dance Dice</div>
+            <div class="project-desc">Can't pick what to practice? Let the dice decide your dance style and rhythm pattern.</div>
+          </div>
+          <div class="project-status">Live</div>
+        </div>
+        <div class="project-card-demo">
+          <div class="dance-dice">
+            <div class="dice-display">
+              <div class="dice-dance-name" id="diceDance" style="color: #c4a87a;">—</div>
+              <div class="dice-pattern" id="dicePattern">
+                <span class="beat slow">Press roll</span>
+              </div>
+              <div class="dice-tip" id="diceTip">Roll to get a dance style and its rhythm pattern</div>
+            </div>
+            <button class="demo-btn dice-btn" onclick="rollDance()">🎲 Roll the Dice →</button>
+          </div>
+        </div>
+        <div class="project-card-footer">
+          <span class="tech-tag">vanilla js</span>
+          <span class="tech-tag">dance theory</span>
+          <span class="tech-tag">random</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT 3: NEKO TELEGRAPH -->
+    <div class="card-pink">
+      <div class="project-card">
+        <div class="project-card-header">
+          <div class="project-card-meta">
+            <div class="project-tag">Cat · Translator</div>
+            <div class="project-name">Neko Telegraph</div>
+            <div class="project-desc">Translate your message into cat language. Scientifically accurate*. (*not accurate at all)</div>
+          </div>
+          <div class="project-status">Live</div>
+        </div>
+        <div class="project-card-demo">
+          <div class="neko-area">
+            <div class="neko-input-row">
+              <input class="neko-input" id="nekoInput" type="text" placeholder="Type anything here..." maxlength="120">
+              <button class="neko-go" onclick="translateNeko()">Nya →</button>
+            </div>
+            <div class="neko-output" id="nekoOutput">Your message in cat, awaiting...</div>
+          </div>
+        </div>
+        <div class="project-card-footer">
+          <span class="tech-tag">vanilla js</span>
+          <span class="tech-tag">string manipulation</span>
+          <span class="tech-tag">chaos</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT 4: COSPLAY MATCH -->
+    <div class="card-purple">
+      <div class="project-card">
+        <div class="project-card-header">
+          <div class="project-card-meta">
+            <div class="project-tag">Cosplay · Quiz</div>
+            <div class="project-name">Character Match</div>
+            <div class="project-desc">Pick your vibes, get a cosplay character suggestion. No criteria, just chaos and character energy.</div>
+          </div>
+          <div class="project-status">Live</div>
+        </div>
+        <div class="project-card-demo">
+          <div class="match-area">
+            <div class="match-q">Your energy today:</div>
+            <div class="match-options" id="matchEnergy">
+              <span class="match-opt" data-v="mysterious">mysterious</span>
+              <span class="match-opt" data-v="chaotic">chaotic</span>
+              <span class="match-opt" data-v="elegant">elegant</span>
+              <span class="match-opt" data-v="powerful">powerful</span>
+              <span class="match-opt" data-v="soft">soft</span>
+              <span class="match-opt" data-v="rebellious">rebellious</span>
+            </div>
+            <div class="match-q">Your vibe palette:</div>
+            <div class="match-options" id="matchPalette">
+              <span class="match-opt" data-v="dark">dark &amp; moody</span>
+              <span class="match-opt" data-v="pastels">soft pastels</span>
+              <span class="match-opt" data-v="neon">neon &amp; bright</span>
+              <span class="match-opt" data-v="gold">gold &amp; royal</span>
+              <span class="match-opt" data-v="mono">monochrome</span>
+            </div>
+            <div class="match-result" id="matchResult">Select your vibes above to get matched →</div>
+          </div>
+        </div>
+        <div class="project-card-footer">
+          <span class="tech-tag">vanilla js</span>
+          <span class="tech-tag">cosplay lore</span>
+          <span class="tech-tag">vibes</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-left">Flora Gong · The Lab — Always shipping something</div>
+  <div class="footer-right">
+    <a href="../index.html" class="footer-link">← Home</a>
+    <a href="cosplay.html" class="footer-link">Cosplay →</a>
+    <a href="dance.html" class="footer-link">Dance →</a>
+  </div>
+</footer>
+
+<script>
+/* === VIBE ORACLE === */
+const vibes = [
+    { name: 'Cottagecore', emoji: '🌿', mood: 'Cozy chaos energy', color: '#84a98c', palette: ['#f2ebe4','#ccd5ae','#84a98c','#588157'] },
+    { name: 'Dark Academia', emoji: '📚', mood: 'Intellectually menacing', color: '#c4956a', palette: ['#1a1208','#3d2b1f','#6b4c35','#c4956a'] },
+    { name: 'Cyberpunk', emoji: '⚡', mood: 'Neon fever dream', color: '#00f5d4', palette: ['#0d0221','#0a0a2e','#08d9d6','#ff2e63'] },
+    { name: 'Ethereal', emoji: '🌙', mood: 'Softly unhinged', color: '#c880ff', palette: ['#0d0021','#2d0050','#8b5cf6','#e9d5ff'] },
+    { name: 'Solarpunk', emoji: '☀️', mood: 'Aggressively hopeful', color: '#fbbf24', palette: ['#14532d','#166534','#86efac','#fbbf24'] },
+    { name: 'Liminal Space', emoji: '🚪', mood: '2am hotel lobby energy', color: '#94a3b8', palette: ['#0f172a','#1e293b','#475569','#94a3b8'] },
+    { name: 'Goblincore', emoji: '🍄', mood: 'Feral and collecting rocks', color: '#a3b18a', palette: ['#1b1b1b','#2d4a22','#588157','#a3b18a'] },
+    { name: 'Vaporwave', emoji: '🌴', mood: 'Nostalgic for places you never were', color: '#ff6eb4', palette: ['#2b0040','#6b35a0','#ff6eb4','#40e0d0'] },
+    { name: 'Old Money', emoji: '🥂', mood: 'Born tired, raised bored', color: '#c4a87a', palette: ['#1a1510','#3d2e1e','#8b6f47','#c4a87a'] },
+    { name: 'Witchcore', emoji: '🔮', mood: 'Suspiciously knowledgeable', color: '#9333ea', palette: ['#0a0014','#1e0035','#6b21a8','#9333ea'] },
+    { name: 'Y2K', emoji: '💿', mood: 'Chrome butterfly era', color: '#ff80ff', palette: ['#0a0020','#1a0040','#cc00cc','#ff80ff'] },
+    { name: 'Fairycore', emoji: '🧚', mood: 'Delightfully unserious', color: '#f9a8d4', palette: ['#1a0520','#3d0d50','#c084fc','#f9a8d4'] },
+];
+
+let lastVibe = -1;
+function rollVibe() {
+    let idx;
+    do { idx = Math.floor(Math.random() * vibes.length); } while (idx === lastVibe);
+    lastVibe = idx;
+    const v = vibes[idx];
+    document.getElementById('vibeEmoji').textContent = v.emoji;
+    document.getElementById('vibeName').textContent = v.name;
+    document.getElementById('vibeName').style.color = v.color;
+    document.getElementById('vibeMood').textContent = v.mood;
+    const swatches = document.getElementById('vibePalette').children;
+    v.palette.forEach((c, i) => { if (swatches[i]) swatches[i].style.background = c; });
+}
+
+/* === DANCE DICE === */
+const dances = [
+    { name: 'Viennese Waltz', color: '#e8d4a8', pattern: ['S','S','Q','Q'], tip: '3/4 time · 60 bars/min · rotate constantly' },
+    { name: 'Tango', color: '#dc4444', pattern: ['S','S','Q','Q','S'], tip: 'Staccato walks, sharp head snaps, no rise & fall' },
+    { name: 'Foxtrot', color: '#c4a87a', pattern: ['S','S','Q','Q'], tip: 'Smooth & continuous · 28-30 bars/min' },
+    { name: 'Quickstep', color: '#60a5fa', pattern: ['S','S','Q','Q','Q','Q','S'], tip: 'Fast &amp; light · 50 bars/min · chassés everywhere' },
+    { name: 'Cha Cha', color: '#f59e0b', pattern: ['1','2','3','Cha','Cha'], tip: 'Keep the hips! Cuban motion on &amp;3&amp;4' },
+    { name: 'Samba', color: '#22c55e', pattern: ['1','a','2','3','a','4'], tip: 'Bounce action · 50 bars/min · carnival energy' },
+    { name: 'Rumba', color: '#f472b6', pattern: ['S','Q','Q'], tip: 'Slowest latin · hip action · every step counts' },
+    { name: 'Paso Doble', color: '#ef4444', pattern: ['1','2','3','4','5','6'], tip: 'Bullfight drama · man=matador · woman=cape/bull' },
+    { name: 'Jive', color: '#a78bfa', pattern: ['Q','Q','Q','a','Q','Q','a','Q'], tip: 'Bouncy & fun · 44 bars/min · Lindy hop roots' },
+];
+
+function rollDance() {
+    const d = dances[Math.floor(Math.random() * dances.length)];
+    document.getElementById('diceDance').textContent = d.name;
+    document.getElementById('diceDance').style.color = d.color;
+    const patEl = document.getElementById('dicePattern');
+    patEl.innerHTML = d.pattern.map(b => {
+        const cls = b === 'S' ? 'slow' : b === 'Q' ? 'quick' : 'and';
+        return `<span class="beat ${cls}">${b}</span>`;
+    }).join('');
+    document.getElementById('diceTip').innerHTML = d.tip;
+}
+
+/* === NEKO TELEGRAPH === */
+const nyaMap = [
+    [/r/gi, 'r'], [/l/gi, 'w'],
+    [/na/gi, 'nya'], [/ni/gi, 'nyi'], [/nu/gi, 'nyu'], [/ne/gi, 'nye'], [/no/gi, 'nyo'],
+    [/ove/gi, 'uv'], [/have/gi, 'haz'], [/the /gi, 'da '], [/you/gi, 'u'],
+    [/want/gi, 'wan'],
+];
+const nekoSuffixes = [' :3', ' nya~', ' uwu', ' meow', ' purr...', ' *flicks tail*', ' >.<', ' (≧◡≦)', ' mrrp'];
+const nekoInserts = ['nya', 'nyan', 'meow', 'purr', 'mrrp', '*baps*'];
+
+function translateNeko() {
+    let text = document.getElementById('nekoInput').value.trim();
+    if (!text) { document.getElementById('nekoOutput').textContent = 'say something first, hooman >.<'; return; }
+    nyaMap.forEach(([pat, rep]) => { text = text.replace(pat, rep); });
+    // random mid-insert
+    if (text.length > 20 && Math.random() > 0.5) {
+        const words = text.split(' ');
+        const insertAt = Math.floor(words.length / 2);
+        words.splice(insertAt, 0, nekoInserts[Math.floor(Math.random() * nekoInserts.length)]);
+        text = words.join(' ');
+    }
+    text += nekoSuffixes[Math.floor(Math.random() * nekoSuffixes.length)];
+    document.getElementById('nekoOutput').textContent = text;
+}
+document.getElementById('nekoInput').addEventListener('keydown', e => { if (e.key === 'Enter') translateNeko(); });
+
+/* === CHARACTER MATCH === */
+const charDb = {
+    'mysterious+dark': { char: 'Kafka (Honkai: Star Rail)', why: 'Purple coat, effortless menace, knows exactly what she\'s doing' },
+    'mysterious+pastels': { char: 'Violet Evergarden', why: 'Haunted but soft, processing feelings in real time' },
+    'mysterious+neon': { char: 'Jinx (Arcane)', why: 'Chaotic neon energy with deep mysterious lore' },
+    'mysterious+gold': { char: 'Hu Tao (Genshin Impact)', why: 'Knows things. Gold butterfly energy. Playfully ominous.' },
+    'mysterious+mono': { char: 'Roronoa Zoro (One Piece)', why: 'Says nothing, means everything, three swords somehow' },
+    'chaotic+dark': { char: 'Ryuk (Death Note)', why: 'Just vibing and watching the chaos unfold' },
+    'chaotic+neon': { char: 'Jinx (Arcane)', why: 'Born for neon chaos. Absolutely feral. Perfect.' },
+    'chaotic+pastels': { char: 'Usagi Tsukino / Sailor Moon', why: 'Chaotic disaster girl who saves the world by crying at it' },
+    'chaotic+gold': { char: 'Kamisato Ayato (Genshin)', why: 'Runs an entire clan on chaos and good wine' },
+    'chaotic+mono': { char: 'Gojo Satoru (JJK)', why: 'Monochrome chaos incarnate with the confidence of someone who\'s right' },
+    'elegant+dark': { char: 'Carmilla (Castlevania)', why: 'Drinks wine, rules a kingdom, wears black — eternally' },
+    'elegant+pastels': { char: 'Princess Serenity', why: 'Floaty, ethereal, cries beautifully, somehow saves everything' },
+    'elegant+neon': { char: 'Yae Miko (Genshin Impact)', why: 'Runs a publishing empire in neon fox form, perpetually amused' },
+    'elegant+gold': { char: 'Zhongli (Genshin Impact)', why: 'Ancient god. Impeccable taste. Never carries his wallet.' },
+    'elegant+mono': { char: 'Howl Pendragon (Howl\'s Moving Castle)', why: 'Hair drama, elegant despair, castle that walks' },
+    'powerful+dark': { char: 'Erza Scarlet (Fairy Tail)', why: 'Armor for every occasion, strength that rewrites the fight' },
+    'powerful+neon': { char: 'All Might (MHA)', why: 'Neon yellow, indestructible, hope incarnate' },
+    'powerful+gold': { char: 'Itto (Genshin Impact)', why: 'Wrestling beetles, unbothered king, golden chaos' },
+    'powerful+pastels': { char: 'Madoka Kaname', why: 'Softest looking, most devastatingly powerful ending' },
+    'powerful+mono': { char: 'Saitama (One Punch Man)', why: 'One punch. Monochrome suit. Existential about it.' },
+    'soft+pastels': { char: 'Tohru Honda (Fruits Basket)', why: 'Gentle warmth that slowly heals everyone around her' },
+    'soft+dark': { char: 'Legosi (Beastars)', why: 'Giant wolf who is extremely soft and very scared of himself' },
+    'soft+neon': { char: 'Aqua (KonoSuba)', why: 'Soft water goddess who causes explosions accidentally' },
+    'soft+gold': { char: 'Nagito Komaeda (DR)', why: 'Gently unhinged, gold hope motif, deeply concerning' },
+    'soft+mono': { char: 'Mob (Mob Psycho 100)', why: 'Quiet, soft, suppressing 100% of everything at all times' },
+    'rebellious+dark': { char: 'Levi Ackerman (AoT)', why: 'Cleaning obsessed rebel with short man anger and a 3D gear' },
+    'rebellious+neon': { char: 'Retsuko (Aggretsuko)', why: 'Sweet by day, death metal rebel by night, we all are' },
+    'rebellious+pastels': { char: 'Marin Kitagawa (My Dress-Up Darling)', why: 'Pastel outside, zero filter inside, pure authentic chaos' },
+    'rebellious+gold': { char: 'Gilgamesh (Fate)', why: 'Owns everything, answers to no one, golden and unbearable' },
+    'rebellious+mono': { char: 'Light Yagami (Death Note)', why: 'Monochrome student by day, unhinged god by night' },
+};
+
+let selEnergy = null, selPalette = null;
+document.getElementById('matchEnergy').addEventListener('click', e => {
+    if (!e.target.classList.contains('match-opt')) return;
+    document.querySelectorAll('#matchEnergy .match-opt').forEach(o => o.classList.remove('sel'));
+    e.target.classList.add('sel');
+    selEnergy = e.target.dataset.v;
+    updateMatch();
+});
+document.getElementById('matchPalette').addEventListener('click', e => {
+    if (!e.target.classList.contains('match-opt')) return;
+    document.querySelectorAll('#matchPalette .match-opt').forEach(o => o.classList.remove('sel'));
+    e.target.classList.add('sel');
+    selPalette = e.target.dataset.v;
+    updateMatch();
+});
+function updateMatch() {
+    if (!selEnergy || !selPalette) return;
+    const key = `${selEnergy}+${selPalette}`;
+    const result = charDb[key];
+    const el = document.getElementById('matchResult');
+    if (result) {
+        el.innerHTML = `<strong style="color:#c880ff">${result.char}</strong><br><span style="color:rgba(255,255,255,0.35);font-size:0.72rem">${result.why}</span>`;
+    } else {
+        el.innerHTML = `<span style="color:rgba(200,128,255,0.5)">You defy categorization. Pick something unhinged and make it work.</span>`;
+    }
+}
+</script>
+
+</body>
+</html>
