@@ -531,6 +531,56 @@ body { font-family: var(--font); background: var(--bg-dark); }
 .save-notice.show { opacity: 1; }
 .kb-hint { position: fixed; bottom: 18px; right: 22px; font-family: var(--font); font-size: 11px; color: rgba(150,150,150,0.35); letter-spacing: 0.06em; z-index: 800; pointer-events: none; }
 
+/* =============================================
+   SLIDE — RESEARCH / PUBLICATIONS
+   ============================================= */
+.slide-research { background: var(--bg-dark); padding: var(--slide-padding); justify-content: center; }
+.slide-research::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 44px 44px;
+}
+.slide-research::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--accent); }
+.research-inner { position: relative; z-index: 1; max-width: min(90vw, 960px); width: 100%; margin: 0 auto; }
+.pub-card {
+    border: 1px solid #1e1e1e; border-left: 3px solid var(--accent);
+    background: #0d0d0d; padding: clamp(18px, 3%, 34px);
+    margin-top: clamp(16px, 3vh, 28px);
+}
+.pub-badges { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: clamp(10px, 1.8vh, 16px); }
+.pub-badge {
+    font-size: clamp(0.48rem, 0.75vw, 0.6rem); font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 9px;
+}
+.pub-badge.conf { background: var(--accent); color: #fff; }
+.pub-badge.year { border: 1px solid #2a2a2a; color: #555; }
+.pub-badge.ieee { border: 1px solid rgba(43,68,255,0.3); color: var(--accent); }
+.pub-title {
+    font-size: clamp(0.95rem, 2.2vw, 1.55rem); font-weight: 800;
+    color: var(--text-light); letter-spacing: -0.02em; line-height: 1.2;
+    margin-bottom: clamp(10px, 1.8vh, 14px);
+}
+.pub-abstract {
+    font-size: clamp(0.62rem, 1.05vw, 0.78rem); color: #4a4a5a; line-height: 1.7;
+    margin-bottom: clamp(12px, 2vh, 18px);
+    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+}
+.pub-meta {
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    padding-top: clamp(12px, 2vh, 18px); border-top: 1px solid #1a1a1a;
+}
+.pub-authors { font-size: clamp(0.58rem, 0.9vw, 0.7rem); color: #404050; line-height: 1.7; }
+.pub-authors strong { color: var(--accent); font-weight: 700; }
+.pub-doi { font-size: clamp(0.5rem, 0.75vw, 0.6rem); color: #2a2a38; font-family: monospace; margin-top: 3px; }
+.pub-link {
+    display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
+    font-size: clamp(0.58rem, 0.9vw, 0.7rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent); border: 1px solid rgba(43,68,255,0.3);
+    padding: clamp(7px, 1.2vh, 10px) clamp(14px, 2vw, 22px); text-decoration: none;
+    transition: background 0.2s, border-color 0.2s;
+}
+.pub-link:hover { background: rgba(43,68,255,0.08); border-color: var(--accent); }
+
 /* === HOBBY LINKS === */
 .hobby-link {
     color: inherit; text-decoration: none;
@@ -1028,6 +1078,38 @@ body { font-family: var(--font); background: var(--bg-dark); }
           <div class="edu-meta-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg><strong>Shanghai · Top 3 in China</strong></div>
           <div class="edu-meta-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><strong>Sep 2017 – Sep 2021</strong></div>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     SLIDE — RESEARCH / PUBLICATIONS
+     ============================================= -->
+<section class="slide slide-research" id="slide-research" aria-label="Research">
+  <div class="research-inner">
+    <div class="section-kicker reveal d1">Research &amp; Publications</div>
+    <h2 class="skills-heading reveal d2" style="margin-bottom:0;">Published<br>Work<em>.</em></h2>
+    <div class="pub-card reveal d3">
+      <div class="pub-badges">
+        <span class="pub-badge conf">ICAHN 2025</span>
+        <span class="pub-badge ieee">IEEE Computer Society</span>
+        <span class="pub-badge year">pp. 43–46</span>
+      </div>
+      <div class="pub-title">Instruction Tuning and CoT Prompting for Contextual Medical QA with LLMs</div>
+      <div class="pub-abstract">Large language models (LLMs) have shown great potential in medical question answering (MedQA), yet adapting them to biomedical reasoning remains challenging due to domain-specific complexity and limited supervision. We study how prompt design and lightweight fine-tuning affect the performance of open-source LLMs on PubMedQA, a benchmark for multiple-choice biomedical questions. Focusing on instruction prompts and Chain-of-Thought (CoT) prompts with QLoRA, our experiments show CoT prompting can improve zero-shot reasoning while instruction tuning significantly boosts accuracy — with benefits that are model- and scale-dependent. Our study offers practical insights into combining prompt engineering with efficient fine-tuning for medical QA applications.</div>
+      <div class="pub-meta">
+        <div>
+          <div class="pub-authors">
+            Chenqian Le &nbsp;·&nbsp; <strong>Ziheng Gong</strong> &nbsp;·&nbsp; Chihang Wang &nbsp;·&nbsp; Haowei Ni &nbsp;·&nbsp; Panfeng Li &nbsp;·&nbsp; Xupeng Chen<br>
+            <span style="color:#2a2a38;">New York University &nbsp;·&nbsp; Columbia University &nbsp;·&nbsp; University of Michigan</span>
+          </div>
+          <div class="pub-doi">DOI: 10.1109/ICAHN67688.2025.00016</div>
+        </div>
+        <a href="https://www.computer.org/csdl/proceedings-article/icahn/2025/963200a043/2bqhrhBSiJi" target="_blank" rel="noopener" class="pub-link">
+          Read Paper
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+        </a>
       </div>
     </div>
   </div>
